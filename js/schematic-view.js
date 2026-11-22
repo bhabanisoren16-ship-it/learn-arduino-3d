@@ -13,6 +13,8 @@ class SchematicView {
 
     if (lesson.id === 4) {
       this.renderKnobSchematic();
+    } else if (lesson.id === 5) {
+      this.renderRGBSchematic();
     } else if (lesson.id === 2) {
       this.renderBlinkSchematic();
     } else if (lesson.id === 3) {
@@ -156,6 +158,128 @@ class SchematicView {
           <div class="legend-item"><span class="legend-color" style="background:#10b981"></span> Green: A0 Wiper Signal (0–5V)</div>
           <div class="legend-item"><span class="legend-color" style="background:#f59e0b"></span> Amber: PWM ~9 Output (490 Hz)</div>
           <div class="legend-item"><span class="legend-color" style="background:#181a20"></span> Black: Common Ground (0V) with Row 11–20 Bridge</div>
+        </div>
+      </div>
+    `;
+  }
+
+  renderRGBSchematic() {
+    this.container.innerHTML = `
+      <div class="schematic-wrapper">
+        <div class="schematic-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <span class="schematic-badge">2D Circuit Schematic</span>
+            <span class="schematic-title">Lesson 5: Mix Colours (#rgb) — 3-Channel PWM &amp; Common-Cathode RGB LED</span>
+          </div>
+          <button class="schematic-back-btn" onclick="document.getElementById('btn-view-3d')?.click()">Return to 3D View ➔</button>
+        </div>
+        <svg viewBox="0 0 800 420" class="schematic-svg" xmlns="http://www.w3.org/2000/svg">
+          <!-- Arduino Uno Symbol Box -->
+          <rect x="30" y="40" width="220" height="340" rx="10" fill="#0B1329" stroke="#00979C" stroke-width="2.5"/>
+          <text x="140" y="75" fill="#38BDF8" font-size="16" font-weight="bold" text-anchor="middle">ARDUINO UNO R3</text>
+          <text x="140" y="95" fill="#94A3B8" font-size="12" text-anchor="middle">ATmega328P MCU</text>
+
+          <!-- Uno Pin Terminals -->
+          <!-- ~9 PWM (Red) -->
+          <circle cx="250" cy="130" r="5" fill="#EE7F62"/>
+          <text x="235" y="135" fill="#FECACA" font-size="13" font-weight="700" text-anchor="end">Pin ~9 (PWM Red)</text>
+
+          <!-- ~10 PWM (Green) -->
+          <circle cx="250" cy="190" r="5" fill="#10B981"/>
+          <text x="235" y="195" fill="#A7F3D0" font-size="13" font-weight="700" text-anchor="end">Pin ~10 (PWM Green)</text>
+
+          <!-- ~11 PWM (Blue) -->
+          <circle cx="250" cy="250" r="5" fill="#3B82F6"/>
+          <text x="235" y="255" fill="#BAE6FD" font-size="13" font-weight="700" text-anchor="end">Pin ~11 (PWM Blue)</text>
+
+          <!-- GND -->
+          <circle cx="250" cy="320" r="5" fill="#64748B"/>
+          <text x="235" y="325" fill="#CBD5E1" font-size="13" font-weight="700" text-anchor="end">GND (Common Rail)</text>
+
+          <!-- Three 220Ω Current Limiting Resistors -->
+          <!-- R1: Red Channel Resistor -->
+          <rect x="380" y="117.5" width="75" height="25" rx="3" fill="#1E293B" stroke="#EE7F62" stroke-width="1.8"/>
+          <text x="417.5" y="134" fill="#FFFFFF" font-size="11.5" font-weight="800" text-anchor="middle">220 Ω (R)</text>
+
+          <!-- R2: Green Channel Resistor -->
+          <rect x="380" y="177.5" width="75" height="25" rx="3" fill="#1E293B" stroke="#10B981" stroke-width="1.8"/>
+          <text x="417.5" y="194" fill="#FFFFFF" font-size="11.5" font-weight="800" text-anchor="middle">220 Ω (G)</text>
+
+          <!-- R3: Blue Channel Resistor -->
+          <rect x="380" y="237.5" width="75" height="25" rx="3" fill="#1E293B" stroke="#3B82F6" stroke-width="1.8"/>
+          <text x="417.5" y="254" fill="#FFFFFF" font-size="11.5" font-weight="800" text-anchor="middle">220 Ω (B)</text>
+
+          <!-- RGB LED Module Box -->
+          <g transform="translate(560, 95)">
+            <rect x="0" y="0" width="190" height="210" rx="10" fill="#1E293B" stroke="#D946EF" stroke-width="2"/>
+            <rect x="0" y="0" width="190" height="28" rx="10" fill="#0F172A"/>
+            <text x="95" y="19" fill="#F0ABFC" font-size="12" font-weight="800" text-anchor="middle">COMMON-CATHODE RGB LED</text>
+
+            <!-- Red Diode -->
+            <circle cx="0" cy="35" r="5" fill="#EE7F62"/>
+            <text x="14" y="39" fill="#FECACA" font-size="11" font-weight="700">Red Anode</text>
+            <path d="M 90 25 L 115 35 L 90 45 Z" fill="#EF4444" stroke="#B91C1C" stroke-width="1.5"/>
+            <line x1="115" y1="22" x2="115" y2="48" stroke="#B91C1C" stroke-width="2"/>
+
+            <!-- Green Diode -->
+            <circle cx="0" cy="95" r="5" fill="#10B981"/>
+            <text x="14" y="99" fill="#A7F3D0" font-size="11" font-weight="700">Green Anode</text>
+            <path d="M 90 85 L 115 95 L 90 105 Z" fill="#10B981" stroke="#047857" stroke-width="1.5"/>
+            <line x1="115" y1="82" x2="115" y2="108" stroke="#047857" stroke-width="2"/>
+
+            <!-- Blue Diode -->
+            <circle cx="0" cy="155" r="5" fill="#3B82F6"/>
+            <text x="14" y="159" fill="#BAE6FD" font-size="11" font-weight="700">Blue Anode</text>
+            <path d="M 90 145 L 115 155 L 90 165 Z" fill="#3B82F6" stroke="#1D4ED8" stroke-width="1.5"/>
+            <line x1="115" y1="142" x2="115" y2="168" stroke="#1D4ED8" stroke-width="2"/>
+
+            <!-- Common Ground Bus -->
+            <line x1="115" y1="35" x2="155" y2="35" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="115" y1="95" x2="155" y2="95" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="115" y1="155" x2="155" y2="155" stroke="#94A3B8" stroke-width="2"/>
+            <line x1="155" y1="35" x2="155" y2="185" stroke="#94A3B8" stroke-width="2.5"/>
+            <circle cx="155" cy="185" r="5" fill="#64748B"/>
+            <text x="145" y="189" fill="#E2E8F0" font-size="11" font-weight="700" text-anchor="end">Cathode (GND)</text>
+          </g>
+
+          <!-- Wires & Connecting Lines -->
+          <!-- Wire 1: D9 to R1 (Red) -->
+          <line x1="250" y1="130" x2="380" y2="130" stroke="#EE7F62" stroke-width="3"/>
+          <line x1="455" y1="130" x2="560" y2="130" stroke="#EE7F62" stroke-width="2.5"/>
+          <g transform="translate(315, 118)">
+            <rect x="-48" y="-11" width="96" height="22" rx="5" fill="#FFFFFF" stroke="#FECACA" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#B91C1C" font-size="11" font-weight="800" text-anchor="middle">Wire 1: ~9 (Red)</text>
+          </g>
+
+          <!-- Wire 2: D10 to R2 (Green) -->
+          <line x1="250" y1="190" x2="380" y2="190" stroke="#10B981" stroke-width="3"/>
+          <line x1="455" y1="190" x2="560" y2="190" stroke="#10B981" stroke-width="2.5"/>
+          <g transform="translate(315, 178)">
+            <rect x="-52" y="-11" width="104" height="22" rx="5" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#047857" font-size="11" font-weight="800" text-anchor="middle">Wire 3: ~10 (Grn)</text>
+          </g>
+
+          <!-- Wire 3: D11 to R3 (Blue) -->
+          <line x1="250" y1="250" x2="380" y2="250" stroke="#3B82F6" stroke-width="3"/>
+          <line x1="455" y1="250" x2="560" y2="250" stroke="#3B82F6" stroke-width="2.5"/>
+          <g transform="translate(315, 238)">
+            <rect x="-52" y="-11" width="104" height="22" rx="5" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#1D4ED8" font-size="11" font-weight="800" text-anchor="middle">Wire 4: ~11 (Blu)</text>
+          </g>
+
+          <!-- Wire 4: GND to Cathode (Navy / Black) -->
+          <path d="M 250 320 L 715 320 L 715 280" stroke="#181A20" stroke-width="2.5" fill="none"/>
+          <g transform="translate(480, 320)">
+            <rect x="-105" y="-11" width="210" height="22" rx="5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#1E293B" font-size="11" font-weight="800" text-anchor="middle">Wire 2: Common GND (0V)</text>
+          </g>
+        </svg>
+
+        <div class="schematic-legend">
+          <div class="legend-item"><span class="legend-color" style="background:#ee7f62"></span> Coral Red: ~9 PWM (Red Anode)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#10b981"></span> Green: ~10 PWM (Green Anode)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#3b82f6"></span> Blue: ~11 PWM (Blue Anode)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#181a20"></span> Navy/Black: Common Cathode GND (0V)</div>
         </div>
       </div>
     `;

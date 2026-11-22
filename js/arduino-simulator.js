@@ -145,6 +145,9 @@ class ArduinoSimulator {
         const b = this.pwmValues[11] || 0;
         const rgbHex = (r << 16) | (g << 8) | b;
         this.workbench.updateLedState(Math.max(r, g, b), rgbHex);
+        if (this.workbench && typeof this.workbench.updateRGBColor === 'function') {
+          this.workbench.updateRGBColor(r, g, b);
+        }
       }
     }
   }

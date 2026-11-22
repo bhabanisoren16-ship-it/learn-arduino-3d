@@ -1248,11 +1248,14 @@ buildBreadboard() {
     this.pinPositions["Breadboard.Btn_Leg1"] = this.getBreadboardHole(8, 'a');
     this.pinPositions["Breadboard.Btn_Leg2"] = this.getBreadboardHole(14, 'a');
 
-    // Lesson 5: RGB LED
+    // Lesson 5: RGB LED (Row 16.5, col 'd') + 3x 220Ω Resistors
+    this.pinPositions["Breadboard.RGB_ResRed"] = this.getBreadboardHole(11, 'a');
     this.pinPositions["Breadboard.RGB_Red"] = this.getBreadboardHole(11, 'a');
-    this.pinPositions["Breadboard.RGB_Green"] = this.getBreadboardHole(13, 'a');
-    this.pinPositions["Breadboard.RGB_Blue"] = this.getBreadboardHole(15, 'a');
-    this.pinPositions["Breadboard.RGB_GND"] = this.getBreadboardHole(17, 'a');
+    this.pinPositions["Breadboard.RGB_GND"] = this.getBreadboardHole(16, 'a');
+    this.pinPositions["Breadboard.RGB_ResGreen"] = this.getBreadboardHole(21, 'a');
+    this.pinPositions["Breadboard.RGB_Green"] = this.getBreadboardHole(21, 'a');
+    this.pinPositions["Breadboard.RGB_ResBlue"] = this.getBreadboardHole(22, 'a');
+    this.pinPositions["Breadboard.RGB_Blue"] = this.getBreadboardHole(22, 'a');
 
     // Lesson 6 & 15: LDR / FSR Photo-Sensors
     this.pinPositions["Breadboard.LDR_Leg1"] = this.getBreadboardHole(9, 'a');
@@ -1345,7 +1348,24 @@ buildBreadboard() {
       this.build3DPushButton(this.getBreadboardHole(9, 'c'));
       this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0x156d35);
     } else if (lessonId === 5) {
-      this.build3DRGBLED(this.getBreadboardHole(14, 'c'));
+      // Lesson 5: 5mm Milky RGB LED + 3x 220Ω Dumbbell Resistors
+      const rgbCenter = this.getBreadboardHole(16.5, 'd');
+      this.build3DRGBLED(rgbCenter);
+      this.build3DResistor(this.getBreadboardHole(11, 'b'), this.getBreadboardHole(15, 'b'), "220");
+      this.build3DResistor(this.getBreadboardHole(17, 'b'), this.getBreadboardHole(21, 'b'), "220");
+      this.build3DResistor(this.getBreadboardHole(18, 'c'), this.getBreadboardHole(22, 'c'), "220");
+
+      this.calloutTargets["RGB"] = new THREE.Vector3(rgbCenter.x, rgbCenter.y + 3.2, rgbCenter.z);
+      const resGreen = this.getBreadboardHole(19, 'b');
+      this.calloutTargets["RGB_RESISTORS"] = new THREE.Vector3(resGreen.x, resGreen.y + 1.8, resGreen.z);
+    } else if (lessonId === 6) {
+      // Lesson 6: LDR Light Sensor + 10kΩ Resistor + Night Light LED + 220Ω Resistor
+      this.build3DLDR(this.getBreadboardHole(12, 'c'));
+      this.build3DResistor(this.getBreadboardHole(12, 'b'), this.getBreadboardHole(16, 'b'), "10k");
+      this.build3DLED(this.getBreadboardHole(18, 'c'), this.getBreadboardHole(19, 'c'), 0xf59e0b);
+      this.build3DResistor(this.getBreadboardHole(15, 'b'), this.getBreadboardHole(18, 'b'), "220");
+      this.calloutTargets["LDR"] = new THREE.Vector3(this.getBreadboardHole(12, 'c').x, this.getBreadboardHole(12, 'c').y + 2.5, this.getBreadboardHole(12, 'c').z);
+      this.calloutTargets["LED"] = new THREE.Vector3(this.getBreadboardHole(18.5, 'c').x, this.getBreadboardHole(18.5, 'c').y + 2.8, this.getBreadboardHole(18.5, 'c').z);
     } else if (lessonId === 7 || lessonId === 16) {
       this.build3DUltrasonic(this.getBreadboardHole(11, 'c'));
       const sonarHole = this.getBreadboardHole(11, 'c');
@@ -1693,43 +1713,79 @@ buildBreadboard() {
 
   build3DRGBLED(anchor) {
     // 4-lead common-cathode 5mm RGB LED
-    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(14, 'c'));
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(16.5, 'd'));
     const rgbGroup = new THREE.Group();
     rgbGroup.position.set(pos.x, pos.y, pos.z);
+    rgbGroup.name = "RGBLEDGroup";
 
-    // Milky diffused epoxy dome with internal luminous glow
-    const domeMat = new THREE.MeshStandardMaterial({
-      color: 0xf5f3ee,
-      emissive: 0x9333ea,
-      emissiveIntensity: 0.35,
-      roughness: 0.18,
+    // 1. Milky diffused epoxy lens with deep internal luminous color blending
+    this.rgbLensMat = new THREE.MeshStandardMaterial({
+      color: 0xf4f0e8,
+      emissive: 0xd946ef, // Vibrant default neon magenta/purple
+      emissiveIntensity: 0.75,
+      roughness: 0.22,
+      metalness: 0.02,
       transparent: true,
-      opacity: 0.92
+      opacity: 0.94
     });
 
-    const dome = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 1.7, 24), domeMat);
-    dome.position.y = 2.4;
+    const dome = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 1.7, 28), this.rgbLensMat);
+    dome.position.y = 2.45;
     dome.castShadow = true;
+    dome.receiveShadow = true;
     rgbGroup.add(dome);
 
-    const top = new THREE.Mesh(new THREE.SphereGeometry(0.85, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
-    top.position.y = 3.25;
+    const top = new THREE.Mesh(new THREE.SphereGeometry(0.85, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2), this.rgbLensMat);
+    top.position.y = 3.30;
     top.castShadow = true;
     rgbGroup.add(top);
 
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.22, 24), domeMat);
-    rim.position.y = 1.5;
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.24, 28), this.rgbLensMat);
+    rim.position.y = 1.50;
+    rim.castShadow = true;
     rgbGroup.add(rim);
 
-    // 4 silver leads extending down into breadboard
-    const leadMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
-    [-0.6, -0.2, 0.2, 0.6].forEach(lz => {
-      const lead = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.5, 8), leadMat);
-      lead.position.set(0, 0.75, lz);
+    // Subtle dark perimeter outline for crisp CAD silhouette
+    const outlineMat = new THREE.LineBasicMaterial({ color: 0x4a1d96, transparent: true, opacity: 0.55 });
+    const domeEdges = new THREE.LineSegments(new THREE.EdgesGeometry(dome.geometry), outlineMat);
+    dome.add(domeEdges);
+
+    // 2. Real Volumetric PointLight casting colored light onto breadboard surface
+    this.rgbPointLight = new THREE.PointLight(0xd946ef, 1.8, 10, 1.5);
+    this.rgbPointLight.position.set(0, 2.6, 0);
+    rgbGroup.add(this.rgbPointLight);
+
+    // 3. Four Solder Lead Pins (Red, GND Common Cathode, Green, Blue)
+    // Row 15 (-0.933 z), Row 16 (-0.311 z), Row 17 (+0.311 z), Row 18 (+0.933 z)
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    const leadZOffsets = [-0.933, -0.311, 0.311, 0.933];
+
+    leadZOffsets.forEach((lz, idx) => {
+      // Longest lead is Cathode (idx === 1)
+      const pinLength = (idx === 1) ? 1.6 : 1.4;
+      const lead = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, pinLength, 10), pinMat);
+      lead.position.set(0, pinLength * 0.5, lz);
+      lead.castShadow = true;
       rgbGroup.add(lead);
     });
 
     this.componentsGroup.add(rgbGroup);
+  }
+
+  updateRGBColor(r, g, b) {
+    if (!this.rgbLensMat) return;
+    const normR = Math.max(0, Math.min(255, r)) / 255;
+    const normG = Math.max(0, Math.min(255, g)) / 255;
+    const normB = Math.max(0, Math.min(255, b)) / 255;
+    const lum = Math.max(normR, normG, normB);
+    const col = new THREE.Color(normR, normG, normB);
+
+    this.rgbLensMat.emissive.copy(col);
+    this.rgbLensMat.emissiveIntensity = lum > 0 ? 0.45 + lum * 0.55 : 0.05;
+    if (this.rgbPointLight) {
+      this.rgbPointLight.color.copy(col);
+      this.rgbPointLight.intensity = lum * 2.2;
+    }
   }
 
   build3DUltrasonic(anchor) {
@@ -2011,12 +2067,19 @@ buildBreadboard() {
 
       if (pFrom && pTo) {
         let colHex = wireColorMap[conn.color.toLowerCase()] || 0x1d4ed8;
-        // In Lesson 4 Spotlight, match exact wiring from reference:
-        if (conn.from.includes('D9') || conn.to.includes('D9')) colHex = 0xf0a53a; // Radiant Golden Amber for PWM
-        if (conn.to.includes('A0') || conn.from.includes('A0')) colHex = 0x3fae6a; // Vibrant Rich Green for Wiper
-        if (conn.from.includes('5V') || conn.to.includes('5V')) colHex = 0xd64a3a; // Vibrant Rich Red for 5V
-        if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x2f3547; // Navy/Charcoal for GND
-        if (conn.isBridge || conn.from.includes('Bridge') || conn.to.includes('Bridge')) colHex = 0x2f3547; // Navy Ground Bridge
+        // Lesson-specific authentic color palettes matching reference manual & screenshots
+        if (this.activeLesson && (this.activeLesson.id === 5 || this.activeLesson.slug === 'mix-colours' || (this.activeLesson.hash && this.activeLesson.hash.includes('rgb')))) {
+          if (conn.from.includes('D9') || conn.to.includes('D9')) colHex = 0xee7f62; // Coral / Red for Red channel
+          else if (conn.from.includes('D10') || conn.to.includes('D10')) colHex = 0x3fae6a; // Vibrant Emerald Green for Green channel
+          else if (conn.from.includes('D11') || conn.to.includes('D11')) colHex = 0x3d6fc4; // Rich Royal Blue for Blue channel
+          else if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x24272f; // Deep Navy for GND
+        } else if (this.activeLesson && (this.activeLesson.id === 4 || this.activeLesson.slug === 'turn-a-knob' || (this.activeLesson.hash && this.activeLesson.hash.includes('knob')))) {
+          if (conn.from.includes('D9') || conn.to.includes('D9')) colHex = 0xf0a53a; // Radiant Golden Amber for PWM
+          if (conn.to.includes('A0') || conn.from.includes('A0')) colHex = 0x3fae6a; // Vibrant Rich Green for Wiper
+          if (conn.from.includes('5V') || conn.to.includes('5V')) colHex = 0xd64a3a; // Vibrant Rich Red for 5V
+          if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x24272f; // Navy/Charcoal for GND
+          if (conn.isBridge || conn.from.includes('Bridge') || conn.to.includes('Bridge')) colHex = 0x24272f; // Navy Ground Bridge
+        }
         this.createCurved3DWire(pFrom, pTo, colHex, index, conn);
       }
     });
@@ -2137,8 +2200,8 @@ buildBreadboard() {
       const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.16, 12, false);
       const tubeMat = new THREE.MeshStandardMaterial({
         color: colorHex,
-        roughness: 0.48,
-        metalness: 0.0
+        roughness: 0.24,
+        metalness: 0.04
       });
 
       const wireMesh = new THREE.Mesh(tubeGeo, tubeMat);
@@ -2272,8 +2335,8 @@ buildBreadboard() {
     const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.22, 16, false);
     const tubeMat = new THREE.MeshStandardMaterial({
       color: colorHex,
-      roughness: 0.50,
-      metalness: 0.0
+      roughness: 0.24,
+      metalness: 0.04
     });
 
     const wireMesh = new THREE.Mesh(tubeGeo, tubeMat);

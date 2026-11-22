@@ -289,10 +289,16 @@ void loop() {
       applications: "Mood lights, smart bulb illumination, multi-state visual telemetry."
     },
     pinout: [
-      { pin: "~D9", function: "Red LED Anode via 220Ω", signal: "PWM (0-255)" },
-      { pin: "~D10", function: "Green LED Anode via 220Ω", signal: "PWM (0-255)" },
-      { pin: "~D11", function: "Blue LED Anode via 220Ω", signal: "PWM (0-255)" },
-      { pin: "GND", function: "Common Cathode Lead", signal: "0V Ground" }
+      { pin: "~D9", function: "220 Ω → Red Anode", signal: "PWM duty cycle (0–255) sets red channel brightness.", color: "#ee7f62" },
+      { pin: "~D10", function: "220 Ω → Green Anode", signal: "PWM duty cycle (0–255) sets green channel brightness.", color: "#3fae6a" },
+      { pin: "~D11", function: "220 Ω → Blue Anode", signal: "PWM duty cycle (0–255) sets blue channel brightness.", color: "#3d6fc4" },
+      { pin: "GND", function: "Common Cathode Lead", signal: "Ground return shared by all three color dies (0 V).", color: "#24272f" }
+    ],
+    callouts: [
+      { anchor: "part:rgb", icon: "bulb", title: "RGB LED", body: "Three colours in one lens — click it to mix.", x: 290, y: -350, w: 238, side: "bottom", at: 40, leg: 30, ring: true },
+      { anchor: "part:r-green", icon: "resistor", wide: true, title: "3 Resistors", body: "220 Ω on each colour keeps the current safe.", x: 270, y: 160, w: 248, side: "left", at: 46, leg: 40, ring: true },
+      { anchor: "pin:D10", icon: "pwm", wide: true, title: "Pins ~9 ~10 ~11", body: "One PWM pin for each colour.", x: -162, y: -350, w: 252, side: "bottom", at: 70, leg: 30, ring: true },
+      { anchor: "pin:GND", icon: "wave", title: "GND", body: "The longest leg is the shared ground.", x: -498, y: -330, w: 236, side: "right", at: 46, leg: 30, ring: true }
     ],
     code: `// Lesson 5: Mix Colours
 // Sweeps three independent PWM channels (0–255) to blend full-spectrum color.
@@ -343,10 +349,10 @@ void loop() {
       resistors: "3x 220 Ω 1/4W"
     },
     requiredNetlist: [
-      { from: "Uno.D9", to: "Breadboard.RGB_Red", color: "red", label: "D9 to Red Anode" },
-      { from: "Uno.D10", to: "Breadboard.RGB_Green", color: "green", label: "D10 to Green Anode" },
-      { from: "Uno.D11", to: "Breadboard.RGB_Blue", color: "blue", label: "D11 to Blue Anode" },
-      { from: "Breadboard.RGB_GND", to: "Uno.GND", color: "black", label: "Common Cathode to GND" }
+      { from: "Uno.D9", to: "Breadboard.RGB_ResRed", color: "red", label: "Wire 1 (Coral/Red): Uno PWM ~9 → 220 Ω Resistor → Red Anode" },
+      { from: "Breadboard.RGB_GND", to: "Uno.GND", color: "black", label: "Wire 2 (Navy): Common Cathode (GND) → Uno GND" },
+      { from: "Uno.D10", to: "Breadboard.RGB_ResGreen", color: "green", label: "Wire 3 (Green): Uno PWM ~10 → 220 Ω Resistor → Green Anode" },
+      { from: "Uno.D11", to: "Breadboard.RGB_ResBlue", color: "blue", label: "Wire 4 (Blue): Uno PWM ~11 → 220 Ω Resistor → Blue Anode" }
     ],
     sensorControls: [
       { id: "rgb_r", type: "slider", label: "Red PWM (~9)", default: 255, min: 0, max: 255, step: 1, unit: "PWM" },

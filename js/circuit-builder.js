@@ -204,6 +204,13 @@ class CircuitBuilder {
     // Ground return aliases: Bridge_GND equates to Uno.GND / Pot_Leg3, Bridge_Cathode equates to LED_Cathode
     if ((clean1.includes('bridge') && clean2.includes('gnd')) || (clean2.includes('bridge') && clean1.includes('gnd'))) return true;
     if ((clean1.includes('bridge') && clean2.includes('cathode')) || (clean2.includes('bridge') && clean1.includes('cathode'))) return true;
+    // RGB LED aliases:
+    if (clean1.includes('rgb') && clean2.includes('rgb')) {
+      if (clean1.includes('red') && clean2.includes('red')) return true;
+      if (clean1.includes('green') && clean2.includes('green')) return true;
+      if (clean1.includes('blue') && clean2.includes('blue')) return true;
+      if ((clean1.includes('gnd') || clean1.includes('cathode')) && (clean2.includes('gnd') || clean2.includes('cathode'))) return true;
+    }
     return false;
   }
 

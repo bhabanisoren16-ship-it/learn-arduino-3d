@@ -769,6 +769,159 @@ document.addEventListener('DOMContentLoaded', () => {
           offsetY: 20
         }
       ];
+    } else if (currentLesson.id === 5) {
+      calloutDefs = [
+        {
+          id: 'rgb',
+          icon: 'bulb',
+          title: 'RGB LED',
+          body: 'Three colours in one lens — click it to mix.',
+          target: workbench.calloutTargets["RGB"] || workbench.getBreadboardHole(16.5, 'd'),
+          offsetX: 85,
+          offsetY: -75
+        },
+        {
+          id: 'resistors',
+          icon: 'resistor',
+          title: '3 RESISTORS',
+          body: '220 Ω on each colour keeps the current safe.',
+          target: workbench.calloutTargets["RGB_RESISTORS"] || workbench.getBreadboardHole(19, 'b'),
+          offsetX: 85,
+          offsetY: 20
+        },
+        {
+          id: 'pins',
+          icon: 'pwm',
+          title: 'PINS ~9 ~10 ~11',
+          body: 'One PWM pin for each colour.',
+          target: workbench.pinPositions["Uno.D10"] || workbench.pinPositions["Uno.D9"],
+          offsetX: -210,
+          offsetY: -55
+        },
+        {
+          id: 'gnd',
+          icon: 'wave',
+          title: 'GND',
+          body: 'The longest leg is the shared ground.',
+          target: workbench.pinPositions["Uno.GND_DIG"] || workbench.pinPositions["Uno.GND"],
+          offsetX: -195,
+          offsetY: 25
+        }
+      ];
+    } else if (currentLesson.id === 6) {
+      calloutDefs = [
+        {
+          id: 'ldr',
+          icon: 'wave',
+          title: 'LIGHT SENSOR',
+          body: 'Less resistance the more light falls on it.',
+          target: workbench.calloutTargets["LDR"] || workbench.getBreadboardHole(12, 'c'),
+          offsetX: 80,
+          offsetY: -70
+        },
+        {
+          id: 'led',
+          icon: 'led',
+          title: 'NIGHT LIGHT',
+          body: 'Comes on when the reading says “dark”.',
+          target: workbench.calloutTargets["LED"] || workbench.getBreadboardHole(18.5, 'c'),
+          offsetX: 80,
+          offsetY: 20
+        },
+        {
+          id: 'a0',
+          icon: 'wave',
+          title: 'PIN A0',
+          body: 'Reads the voltage divider between sensor & 10 kΩ.',
+          target: workbench.pinPositions["Uno.A0"],
+          offsetX: -240,
+          offsetY: 20
+        }
+      ];
+    } else if (currentLesson.id === 8 || currentLesson.id === 9) {
+      calloutDefs = [
+        {
+          id: 'buzzer',
+          icon: 'chip',
+          title: 'PIEZO BUZZER',
+          body: 'Clicks every time its pin flips to make sound.',
+          target: workbench.calloutTargets["BUZZER"] || workbench.getBreadboardHole(7, 'c'),
+          offsetX: 80,
+          offsetY: -60
+        },
+        {
+          id: 'd8',
+          icon: 'wave',
+          title: 'PIN 8',
+          body: 'tone() toggles it at the exact musical pitch.',
+          target: workbench.pinPositions["Uno.D8"],
+          offsetX: -240,
+          offsetY: 20
+        }
+      ];
+    } else if (currentLesson.id === 10) {
+      calloutDefs = [
+        {
+          id: 'motor',
+          icon: 'chip',
+          title: 'DC MOTOR',
+          body: 'Spins faster with more PWM pulses.',
+          target: workbench.getBreadboardHole(15, 'c'),
+          offsetX: 80,
+          offsetY: -65
+        },
+        {
+          id: 'd6',
+          icon: 'pwm',
+          title: 'PIN ~6 (PWM)',
+          body: 'Drives the transistor base switch.',
+          target: workbench.pinPositions["Uno.D6"] || workbench.pinPositions["Uno.D9"],
+          offsetX: -220,
+          offsetY: 20
+        }
+      ];
+    } else if (currentLesson.id === 11) {
+      calloutDefs = [
+        {
+          id: 'tmp36',
+          icon: 'wave',
+          title: 'TMP36 SENSOR',
+          body: 'Voltage climbs 10 mV for every degree Celsius.',
+          target: workbench.getBreadboardHole(11, 'c'),
+          offsetX: 80,
+          offsetY: -70
+        },
+        {
+          id: 'a0',
+          icon: 'wave',
+          title: 'PIN A0',
+          body: 'Reads the sensor voltage: 0.5V = 0°C.',
+          target: workbench.pinPositions["Uno.A0"],
+          offsetX: -240,
+          offsetY: 20
+        }
+      ];
+    } else if (currentLesson.id === 12) {
+      calloutDefs = [
+        {
+          id: 'servo',
+          icon: 'chip',
+          title: 'SG90 SERVO',
+          body: 'Rotates shaft to exact programmed angle.',
+          target: workbench.getBreadboardHole(12, 'c'),
+          offsetX: 80,
+          offsetY: -65
+        },
+        {
+          id: 'd9',
+          icon: 'pwm',
+          title: 'PIN ~9 (SIGNAL)',
+          body: 'Pulse width sets the angle (1–2 ms).',
+          target: workbench.pinPositions["Uno.D9"],
+          offsetX: -220,
+          offsetY: 20
+        }
+      ];
     } else if (currentLesson.id === 7) {
       calloutDefs = [
         {
