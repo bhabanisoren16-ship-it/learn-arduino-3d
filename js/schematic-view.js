@@ -121,41 +121,41 @@ class SchematicView {
             <text x="0" y="4" fill="#B91C1C" font-size="11" font-weight="800" text-anchor="middle">Wire 1 (+5V)</text>
           </g>
 
-          <!-- Wire 2: Pot Wiper to A0 (Amber) -->
-          <path d="M 370 190 L 250 190" stroke="#D97706" stroke-width="3" fill="none"/>
+          <!-- Wire 2: Pot Wiper to A0 (Green) -->
+          <path d="M 370 190 L 250 190" stroke="#16A34A" stroke-width="3" fill="none"/>
           <g transform="translate(310, 178)">
-            <rect x="-56" y="-11" width="112" height="22" rx="5" fill="#FFFFFF" stroke="#FCD34D" stroke-width="1.5"/>
-            <text x="0" y="4" fill="#B45309" font-size="11" font-weight="800" text-anchor="middle">Wire 2 (A0 Wiper)</text>
+            <rect x="-56" y="-11" width="112" height="22" rx="5" fill="#FFFFFF" stroke="#86EFAC" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#15803D" font-size="11" font-weight="800" text-anchor="middle">Wire 2 (Green: A0)</text>
           </g>
 
-          <!-- Wire 4: ~9 PWM to Resistor (Blue) -->
-          <path d="M 250 250 L 610 250" stroke="#0284C7" stroke-width="3" fill="none"/>
+          <!-- Wire 4: ~9 PWM to Resistor (Orange/Amber) -->
+          <path d="M 250 250 L 610 250" stroke="#F59E0B" stroke-width="3" fill="none"/>
           <g transform="translate(435, 238)">
-            <rect x="-60" y="-11" width="120" height="22" rx="5" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1.5"/>
-            <text x="0" y="4" fill="#0369A1" font-size="11" font-weight="800" text-anchor="middle">Wire 4 (PWM ~9)</text>
+            <rect x="-65" y="-11" width="130" height="22" rx="5" fill="#FFFFFF" stroke="#FDE68A" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#B45309" font-size="11" font-weight="800" text-anchor="middle">Wire 4 (Orange: ~9)</text>
           </g>
 
-          <!-- Common Ground Rail (Black / Dark Slate) -->
+          <!-- Common Ground Rail (Navy) -->
           <!-- Pot Leg 3 to GND -->
-          <path d="M 585 190 L 595 190 L 595 310 L 250 310" stroke="#475569" stroke-width="2.5" stroke-dasharray="5,4" fill="none"/>
-          <!-- LED Cathode to GND -->
-          <path d="M 722 250 L 745 250 L 745 310 L 595 310" stroke="#475569" stroke-width="2.5" fill="none"/>
+          <path d="M 585 190 L 595 190 L 595 310 L 250 310" stroke="#2F3547" stroke-width="2.5" fill="none"/>
+          <!-- LED Cathode to Ground Bridge -->
+          <path d="M 722 250 L 745 250 L 745 310 L 595 310" stroke="#2F3547" stroke-width="2.5" fill="none"/>
 
           <!-- Common Ground Badge -->
           <g transform="translate(420, 310)">
-            <rect x="-115" y="-11" width="230" height="22" rx="5" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
-            <text x="0" y="4" fill="#1E293B" font-size="11" font-weight="800" text-anchor="middle">Wires 3 &amp; 5: Common GND Rail (0V)</text>
+            <rect x="-125" y="-11" width="250" height="22" rx="5" fill="#FFFFFF" stroke="#94A3B8" stroke-width="1.5"/>
+            <text x="0" y="4" fill="#1E293B" font-size="11" font-weight="800" text-anchor="middle">Wire 3 &amp; 5: Navy Ground &amp; Bridge (0V)</text>
           </g>
 
           <!-- Junction Node -->
-          <circle cx="595" cy="310" r="4.5" fill="#334155"/>
+          <circle cx="595" cy="310" r="4.5" fill="#2F3547"/>
         </svg>
 
         <div class="schematic-legend">
-          <div class="legend-item"><span class="legend-color" style="background:#dc2626"></span> 5V Power Reference (+5V)</div>
-          <div class="legend-item"><span class="legend-color" style="background:#d97706"></span> A0 Wiper Signal (0–5V)</div>
-          <div class="legend-item"><span class="legend-color" style="background:#0284c7"></span> PWM ~9 Output (490 Hz)</div>
-          <div class="legend-item"><span class="legend-color" style="background:#475569"></span> Common Ground Rail (0V)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#d64a3a"></span> Red: 5V Power (+5V)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#3fae6a"></span> Green: A0 Wiper Signal (0–5V)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#f0a53a"></span> Orange: PWM ~9 Output (490 Hz)</div>
+          <div class="legend-item"><span class="legend-color" style="background:#2f3547"></span> Navy: Ground &amp; Breadboard Bridge (0V)</div>
         </div>
       </div>
     `;

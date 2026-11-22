@@ -226,7 +226,7 @@ void loop() {
       { pin: "A0", function: "Pot (middle)", signal: "The wiper: 0–5 V as you turn.", color: "#3fae6a" },
       { pin: "GND", function: "Pot (right)", signal: "Bottom of the divider.", color: "#2f3547" },
       { pin: "~D9", function: "220 Ω → LED", signal: "PWM output sets the brightness.", color: "#f0a53a" },
-      { pin: "GND", function: "LED Cathode return", signal: "Common 0V Ground", color: "#2f3547" }
+      { pin: "GND", function: "Bridge 11b → 20e", signal: "Ground return to LED cathode.", color: "#2f3547" }
     ],
     callouts: [
       { anchor: "part:pot", icon: "knob", title: "Potentiometer", body: "Drag around the knob to turn it.", x: -162, y: -350, w: 252, side: "bottom", at: 200, leg: 30, ring: true },
@@ -256,12 +256,11 @@ void loop() {
       readTime: "≈ 100 µs per analogRead()"
     },
     requiredNetlist: [
-      { from: "Uno.5V", to: "Breadboard.Pot_Leg1", color: "red", label: "Wire 1 (Red): Uno 5V → Pot Outer Leg 1" },
-      { from: "Breadboard.Pot_Leg2", to: "Uno.A0", color: "amber", label: "Wire 2 (Amber): Pot Middle Leg 2 (Wiper) → Uno A0" },
-      { from: "Uno.GND", to: "Breadboard.Pot_Leg3", color: "black", label: "Wire 3 (Black): Uno GND → Pot Outer Leg 3" },
-      { from: "Uno.D9", to: "Breadboard.Resistor1", color: "blue", label: "Wire 4 (Blue): Uno PWM ~9 → 220Ω Resistor" },
-      { from: "Breadboard.Resistor2", to: "Breadboard.LED_Anode", color: "amber", label: "Resistor → LED Anode" },
-      { from: "Breadboard.LED_Cathode", to: "Uno.GND", color: "black", label: "Wire 5 (Black): LED Cathode → Uno GND" }
+      { from: "Uno.5V", to: "Breadboard.Pot_Leg1", color: "red", label: "Wire 1 (Red): Uno 5V → Row 9a (Pot Top)" },
+      { from: "Uno.A0", to: "Breadboard.Pot_Leg2", color: "green", label: "Wire 2 (Green): Uno A0 → Row 10a (Pot Wiper)" },
+      { from: "Uno.GND", to: "Breadboard.Pot_Leg3", color: "navy", label: "Wire 3 (Navy): Uno GND → Row 11a (Pot Bottom)" },
+      { from: "Uno.D9", to: "Breadboard.Resistor1", color: "orange", label: "Wire 4 (Orange): Uno PWM ~9 → Row 15a (Resistor)" },
+      { from: "Breadboard.Bridge_GND", to: "Breadboard.Bridge_Cathode", color: "navy", label: "Wire 5 (Navy): Ground Bridge 11b → 20e", isBridge: true }
     ],
     sensorControls: [
       { id: "knob_raw", type: "knob", label: "10 kΩ Potentiometer (A0)", default: 620, min: 0, max: 1023, step: 1, unit: "ADC" }

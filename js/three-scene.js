@@ -1238,9 +1238,9 @@ buildBreadboard() {
     this.pinPositions["Breadboard.Pot_Leg2"] = this.getBreadboardHole(10, 'a');
     this.pinPositions["Breadboard.Pot_Leg3"] = this.getBreadboardHole(11, 'a');
     this.pinPositions["Breadboard.Resistor1"] = this.getBreadboardHole(15, 'a');
-    this.pinPositions["Breadboard.Resistor2"] = this.getBreadboardHole(18, 'c');
-    this.pinPositions["Breadboard.LED_Anode"] = this.getBreadboardHole(18, 'c');
-    this.pinPositions["Breadboard.LED_Cathode"] = this.getBreadboardHole(20, 'a');
+    this.pinPositions["Breadboard.Resistor2"] = this.getBreadboardHole(19, 'b');
+    this.pinPositions["Breadboard.LED_Anode"] = this.getBreadboardHole(19, 'c');
+    this.pinPositions["Breadboard.LED_Cathode"] = this.getBreadboardHole(20, 'c');
     this.pinPositions["Breadboard.Bridge_GND"] = this.getBreadboardHole(11, 'b');
     this.pinPositions["Breadboard.Bridge_Cathode"] = this.getBreadboardHole(20, 'e');
 
@@ -1330,13 +1330,13 @@ buildBreadboard() {
     if (isKnob) {
       // Spotlight #knob: Knurled Potentiometer + 220Ω Dumbbell Resistor + 5mm Optical Red LED
       this.build3DPotentiometer(this.getBreadboardHole(10, 'e'));
-      this.build3DResistor(this.getBreadboardHole(15, 'c'), this.getBreadboardHole(18, 'c'), "220");
-      this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0xcc1111);
+      this.build3DResistor(this.getBreadboardHole(15, 'b'), this.getBreadboardHole(19, 'b'), "220");
+      this.build3DLED(this.getBreadboardHole(19, 'c'), this.getBreadboardHole(20, 'c'), 0xe8392e);
 
       const potHole = this.getBreadboardHole(10, 'e');
-      this.calloutTargets["POT"] = new THREE.Vector3(9.8, potHole.y + 3.2, potHole.z);
-      const ledHole = this.getBreadboardHole(19, 'd');
-      this.calloutTargets["LED"] = new THREE.Vector3(7.475, ledHole.y + 3.5, ledHole.z);
+      this.calloutTargets["POT"] = new THREE.Vector3(9.0, potHole.y + 3.2, potHole.z);
+      const ledHole = this.getBreadboardHole(19.5, 'c');
+      this.calloutTargets["LED"] = new THREE.Vector3(ledHole.x, ledHole.y + 3.2, ledHole.z);
     } else if (lessonId === 2) {
       this.build3DResistor(this.getBreadboardHole(15, 'c'), this.getBreadboardHole(18, 'c'), "220");
       this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0xcc1111);
@@ -1381,95 +1381,96 @@ buildBreadboard() {
     const h9 = this.getBreadboardHole(9, 'e');
     const h11 = this.getBreadboardHole(11, 'e');
 
-    // Potentiometer centered at x = 9.8, z = h10.z, y = h10.y
-    potGroup.position.set(9.8, h10.y, h10.z);
+    // Breadboard column 'e' is at x = 8.26, column 'f' is at x = 9.94.
+    // Center the potentiometer base at x = 9.0 (covering cols e & f), y = h10.y, z = h10.z
+    const posX = 9.0;
+    potGroup.position.set(posX, h10.y, h10.z);
     potGroup.name = "PotentiometerGroup";
 
-    // 1. Vibrant Royal Technical Blue Base (#0284C7) with Crisp Edge Geometry
-    const baseMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.45, metalness: 0.04 });
-    const base = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.0, 3.2), baseMat);
-    base.position.y = 1.0;
+    // 1. Vibrant Slate/Technical Blue Base (#3B62B3)
+    const baseMat = new THREE.MeshStandardMaterial({
+      color: 0x3b62b3,
+      roughness: 0.48,
+      metalness: 0.05
+    });
+    const base = new THREE.Mesh(new THREE.BoxGeometry(2.6, 1.6, 2.5), baseMat);
+    base.position.y = 0.8;
     base.castShadow = true;
     base.receiveShadow = true;
 
     const baseEdges = new THREE.LineSegments(
       new THREE.EdgesGeometry(base.geometry),
-      new THREE.LineBasicMaterial({ color: 0x024875, transparent: true, opacity: 0.75 })
+      new THREE.LineBasicMaterial({ color: 0x1f3b73, transparent: true, opacity: 0.65 })
     );
     base.add(baseEdges);
     potGroup.add(base);
 
-    // 2. Threaded Bushing, Metal Washer & Brass Hex Nut
-    const collarMat = new THREE.MeshStandardMaterial({ color: 0xd0ccd4, roughness: 0.22, metalness: 0.8 });
-    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.85, 24), collarMat);
-    collar.position.y = 2.15;
+    // 2. Threaded Collar / Bushing (#D9D6CF)
+    const collarMat = new THREE.MeshStandardMaterial({
+      color: 0xd9d6cf,
+      roughness: 0.32,
+      metalness: 0.65
+    });
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(1.12, 1.12, 0.32, 32), collarMat);
+    collar.position.y = 1.76;
     collar.castShadow = true;
     potGroup.add(collar);
 
-    const washerMat = new THREE.MeshStandardMaterial({ color: 0xc4c0b8, roughness: 0.18, metalness: 0.88 });
-    const washer = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.08, 24), washerMat);
-    washer.position.y = 2.04;
-    potGroup.add(washer);
-
-    const nutMat = new THREE.MeshStandardMaterial({ color: 0xe5b022, roughness: 0.18, metalness: 0.92 });
-    const nut = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.25, 0.28, 6), nutMat);
-    nut.position.y = 2.18;
-    nut.castShadow = true;
-    potGroup.add(nut);
-
-    // 3. Charcoal Cylindrical Dial Knob (#181B22) with Bold Pure White Indicator Line on Top
+    // 3. Charcoal Fluted Dial Knob (#2C3242) with 24 segments and flatShading: true
     this.potKnobMesh = new THREE.Group();
-    this.potKnobMesh.position.y = 2.75;
+    this.potKnobMesh.position.y = 1.95;
+    this.potKnobMesh.name = "PotKnobMesh";
 
-    const knobMat = new THREE.MeshStandardMaterial({ color: 0x181b22, roughness: 0.50 });
-    const knobCyl = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.35, 1.55, 32), knobMat);
+    const knobMat = new THREE.MeshStandardMaterial({
+      color: 0x2c3242,
+      roughness: 0.45,
+      metalness: 0.08,
+      flatShading: true
+    });
+    // Cylindrical knob with 24 segments and flatShading creates the knurled/fluted dial look!
+    const knobCyl = new THREE.Mesh(new THREE.CylinderGeometry(1.42, 1.48, 1.65, 24), knobMat);
+    knobCyl.position.y = 0.825;
     knobCyl.castShadow = true;
-
-    const knobEdges = new THREE.LineSegments(
-      new THREE.EdgesGeometry(knobCyl.geometry),
-      new THREE.LineBasicMaterial({ color: 0x050608, transparent: true, opacity: 0.8 })
-    );
-    knobCyl.add(knobEdges);
+    knobCyl.receiveShadow = true;
     this.potKnobMesh.add(knobCyl);
 
-    // 28 Vertical grip ridges around dial
-    const ridgeMat = new THREE.MeshStandardMaterial({ color: 0x0f1116, roughness: 0.55 });
-    for (let i = 0; i < 28; i++) {
-      const angle = (i * Math.PI * 2) / 28;
-      const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.50, 0.14), ridgeMat);
-      ridge.position.set(Math.cos(angle) * 1.35, 0, Math.sin(angle) * 1.35);
-      ridge.rotation.y = -angle;
-      this.potKnobMesh.add(ridge);
-    }
+    // Knob Cap disc on top (#353B4D)
+    const capMat = new THREE.MeshStandardMaterial({ color: 0x353b4d, roughness: 0.4 });
+    const knobCap = new THREE.Mesh(new THREE.CylinderGeometry(1.28, 1.42, 0.22, 32), capMat);
+    knobCap.position.y = 1.70;
+    knobCap.castShadow = true;
+    this.potKnobMesh.add(knobCap);
 
-    // High-Contrast Pure White Pointer Line on Top Surface
+    // Pure White / Ivory High-Contrast Radial Pointer Line on Top Surface (#F4EFE3)
     const pointerMat = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      roughness: 0.1
+      color: 0xf4efe3,
+      roughness: 0.2,
+      emissive: 0xffffff,
+      emissiveIntensity: 0.15
     });
-    const pointer = new THREE.Mesh(
-      new THREE.BoxGeometry(0.24, 0.09, 2.1),
-      pointerMat
-    );
-    pointer.position.set(0, 0.80, 0);
+    // Pointer line extending along z from center to front edge
+    const pointer = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 1.05), pointerMat);
+    pointer.position.set(0, 1.82, 0.52);
     this.potKnobMesh.add(pointer);
 
     potGroup.add(this.potKnobMesh);
 
-    // 4. Three Silver Solder Lug Terminal Pins inserting directly into Row 9, 10, 11 Col 'e'
-    const pinLugMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.88, roughness: 0.18 });
-    const lugLocalX = h10.x - 9.8;
-    const lugPositionsZ = [h9.z - h10.z, 0, h11.z - h10.z];
+    // 4. Three Solder Terminal Pins inserting directly into rows 9, 10, 11 (col 'e')
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xd4d0c8, metalness: 0.85, roughness: 0.2 });
+    const lugZ = [h9.z - h10.z, 0, h11.z - h10.z];
+    const lugX = h10.x - posX; // ~ -0.74 to reach column 'e'
 
-    lugPositionsZ.forEach(lz => {
-      const lugH = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(lugLocalX) + 0.2, 0.2, 0.38), pinLugMat);
-      lugH.position.set(lugLocalX * 0.5, 0.35, lz);
-      potGroup.add(lugH);
+    lugZ.forEach(lz => {
+      // Horizontal lead from body to column 'e'
+      const leadH = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(lugX) + 0.12, 0.14, 0.28), pinMat);
+      leadH.position.set(lugX * 0.5, 0.35, lz);
+      potGroup.add(leadH);
 
-      const lugV = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.85, 0.38), pinLugMat);
-      lugV.position.set(lugLocalX, 0.05, lz);
-      lugV.castShadow = true;
-      potGroup.add(lugV);
+      // Vertical pin dropping into breadboard hole
+      const leadV = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.75, 0.28), pinMat);
+      leadV.position.set(lugX, 0.0, lz);
+      leadV.castShadow = true;
+      potGroup.add(leadV);
     });
 
     this.componentsGroup.add(potGroup);
@@ -1987,14 +1988,15 @@ buildBreadboard() {
 
     // Exact Saturated Rich Wire Colors from Reference Image
     const wireColorMap = {
-      yellow: 0xf59e0b, // Radiant saturated golden yellow (matches Reference Image 3)
-      amber: 0xf59e0b,  // Radiant golden amber
-      green: 0x16a34a,  // Vibrant forest/emerald green
-      red: 0xdc2626,    // Vibrant rich crimson red
-      black: 0x181a20,  // Satin jet black
-      blue: 0x1d4ed8,   // Vibrant royal blue
+      yellow: 0xf0b53a,
+      amber: 0xf0a53a,
+      green: 0x3fae6a,
+      red: 0xd64a3a,
+      black: 0x24272f,
+      navy: 0x2f3547,
+      blue: 0x3d6fc4,
       white: 0xf8fafc,
-      orange: 0xea580c
+      orange: 0xf0a53a
     };
 
     netlist.forEach((conn, index) => {
@@ -2010,10 +2012,11 @@ buildBreadboard() {
       if (pFrom && pTo) {
         let colHex = wireColorMap[conn.color.toLowerCase()] || 0x1d4ed8;
         // In Lesson 4 Spotlight, match exact wiring from reference:
-        if (conn.from.includes('D9') || conn.to.includes('D9')) colHex = 0xf59e0b; // Radiant Golden Yellow for PWM
-        if (conn.to.includes('A0') || conn.from.includes('A0')) colHex = 0x16a34a; // Rich Vibrant Green for Wiper
-        if (conn.from.includes('5V') || conn.to.includes('5V')) colHex = 0xdc2626; // Rich Vibrant Red for 5V
-        if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x181a20; // Deep Satin Jet Black for GND
+        if (conn.from.includes('D9') || conn.to.includes('D9')) colHex = 0xf0a53a; // Radiant Golden Amber for PWM
+        if (conn.to.includes('A0') || conn.from.includes('A0')) colHex = 0x3fae6a; // Vibrant Rich Green for Wiper
+        if (conn.from.includes('5V') || conn.to.includes('5V')) colHex = 0xd64a3a; // Vibrant Rich Red for 5V
+        if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x2f3547; // Navy/Charcoal for GND
+        if (conn.isBridge || conn.from.includes('Bridge') || conn.to.includes('Bridge')) colHex = 0x2f3547; // Navy Ground Bridge
         this.createCurved3DWire(pFrom, pTo, colHex, index, conn);
       }
     });
@@ -2093,8 +2096,61 @@ buildBreadboard() {
 
   createCurved3DWire(p1, p2, colorHex, wireIndex = 0, conn = null) {
     const dist = p1.distanceTo(p2);
-    // Skip zero-distance internal row connections (e.g. row 18 internally connects Resistor & LED anode)
+    // Skip zero-distance internal row connections
     if (dist < 0.6) return;
+
+    const isBridge = !!(conn && (conn.isBridge || (conn.from && conn.from.includes('Bridge')) || (conn.to && conn.to.includes('Bridge'))));
+
+    if (isBridge) {
+      // Sleek low-profile jumper bridge wire on the breadboard
+      const pinMat = new THREE.MeshStandardMaterial({ color: 0x181a20, roughness: 0.6 });
+      const tipGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.32, 12);
+
+      const p1Mesh = new THREE.Mesh(tipGeo, pinMat);
+      p1Mesh.position.copy(p1);
+      p1Mesh.position.y += 0.14;
+      this.wiresGroup.add(p1Mesh);
+
+      const p2Mesh = new THREE.Mesh(tipGeo, pinMat);
+      p2Mesh.position.copy(p2);
+      p2Mesh.position.y += 0.14;
+      this.wiresGroup.add(p2Mesh);
+
+      const startPoint = p1.clone();
+      startPoint.y += 0.28;
+      const endPoint = p2.clone();
+      endPoint.y += 0.28;
+
+      const pTakeoff = startPoint.clone();
+      pTakeoff.y += 0.22;
+      const pLanding = endPoint.clone();
+      pLanding.y += 0.22;
+
+      const apexY = Math.max(startPoint.y, endPoint.y) + 0.45;
+      const pMid = new THREE.Vector3(
+        (startPoint.x + endPoint.x) * 0.5 + 0.30,
+        apexY,
+        (startPoint.z + endPoint.z) * 0.5
+      );
+
+      const curve = new THREE.CatmullRomCurve3([startPoint, pTakeoff, pMid, pLanding, endPoint], false, 'centripetal', 0.5);
+      const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.16, 12, false);
+      const tubeMat = new THREE.MeshStandardMaterial({
+        color: colorHex,
+        roughness: 0.48,
+        metalness: 0.0
+      });
+
+      const wireMesh = new THREE.Mesh(tubeGeo, tubeMat);
+      wireMesh.castShadow = true;
+      wireMesh.receiveShadow = true;
+      wireMesh.userData = { wireIndex, conn, curve };
+      this.wiresGroup.add(wireMesh);
+
+      if (!this.wireCurves) this.wireCurves = [];
+      this.wireCurves.push({ curve, colorHex });
+      return;
+    }
 
     // 1. Authentic DuPont Connector Housing (Compact sleek black body with color-coded strain-relief collar)
     const bootGeo = new THREE.BoxGeometry(0.38, 0.85, 0.38);
@@ -2164,14 +2220,34 @@ buildBreadboard() {
     const endPoint = p2.clone();
     endPoint.y += 0.88;
 
-    const apexY = Math.max(startPoint.y, endPoint.y) + Math.min(dist * 0.16 + 0.6, 2.5) + (wireIndex % 3) * 0.22;
-
     const dirX = endPoint.x - startPoint.x;
     const dirZ = endPoint.z - startPoint.z;
     const perpX = -dirZ / (dist || 1);
     const perpZ = dirX / (dist || 1);
-    const bowSign = (wireIndex % 2 === 0) ? 1 : -1;
-    const bowAmount = Math.min(dist * 0.08, 0.85) * bowSign;
+
+    let apexY, bowAmount;
+
+    if (conn && (conn.from.includes('A0') || conn.to.includes('A0'))) {
+      // Tallest arch for analog wiper wire
+      apexY = Math.max(startPoint.y, endPoint.y) + 3.8;
+      bowAmount = -0.65;
+    } else if (conn && (conn.from.includes('5V') || conn.to.includes('5V'))) {
+      // High arch for 5V power wire
+      apexY = Math.max(startPoint.y, endPoint.y) + 3.1;
+      bowAmount = 0.75;
+    } else if (conn && (conn.from.includes('D9') || conn.to.includes('D9'))) {
+      // Clean sweeping arch from digital pin 9
+      apexY = Math.max(startPoint.y, endPoint.y) + 3.0;
+      bowAmount = -0.35;
+    } else if (conn && (conn.from.includes('GND') || conn.to.includes('GND'))) {
+      // Low smooth arch for ground wire
+      apexY = Math.max(startPoint.y, endPoint.y) + 2.3;
+      bowAmount = 0.25;
+    } else {
+      apexY = Math.max(startPoint.y, endPoint.y) + Math.min(dist * 0.16 + 0.6, 2.5) + (wireIndex % 3) * 0.22;
+      const bowSign = (wireIndex % 2 === 0) ? 1 : -1;
+      bowAmount = Math.min(dist * 0.08, 0.85) * bowSign;
+    }
 
     const pTakeoff = startPoint.clone();
     pTakeoff.y += 0.85;
@@ -2196,7 +2272,7 @@ buildBreadboard() {
     const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.22, 16, false);
     const tubeMat = new THREE.MeshStandardMaterial({
       color: colorHex,
-      roughness: 0.52,
+      roughness: 0.50,
       metalness: 0.0
     });
 
@@ -2315,10 +2391,10 @@ buildBreadboard() {
   setupPotentiometerInteraction() {
     const dom = this.renderer.domElement;
 
-    dom.addEventListener('mousedown', (e) => {
+    const onPointerDown = (clientX, clientY) => {
       const rect = dom.getBoundingClientRect();
-      this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      this.mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+      this.mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 
       this.raycaster.setFromCamera(this.mouse, this.camera);
 
@@ -2328,9 +2404,54 @@ buildBreadboard() {
         if (intersects.length > 0) {
           this.potIsDragging = true;
           if (this.controls) this.controls.enabled = false;
-          return;
+
+          const knobWorldPos = new THREE.Vector3();
+          this.potKnobMesh.getWorldPosition(knobWorldPos);
+          const screenPos = knobWorldPos.clone().project(this.camera);
+          const screenX = (screenPos.x * 0.5 + 0.5) * rect.width + rect.left;
+          const screenY = (-(screenPos.y * 0.5) + 0.5) * rect.height + rect.top;
+
+          this.potKnobCenter = { x: screenX, y: screenY };
+          this.potPrevAngle = Math.atan2(clientY - screenY, clientX - screenX);
+          return true;
         }
       }
+      return false;
+    };
+
+    const onPointerMove = (clientX, clientY) => {
+      if (!this.potIsDragging || !this.potKnobCenter) return;
+      const currAngle = Math.atan2(clientY - this.potKnobCenter.y, clientX - this.potKnobCenter.x);
+      const deltaAngle = Math.atan2(Math.sin(currAngle - this.potPrevAngle), Math.cos(currAngle - this.potPrevAngle));
+      this.potPrevAngle = currAngle;
+
+      const sweepRad = (270 * Math.PI) / 180;
+      const scale = 1023 / sweepRad;
+      this.potCurrentAngle = Math.max(0, Math.min(1023, this.potCurrentAngle + deltaAngle * scale));
+      this.updatePotKnob(this.potCurrentAngle);
+      this.updateLedState(Math.floor(this.potCurrentAngle / 4));
+
+      const potSlider = document.getElementById('main-sensor-range') || document.getElementById('telemetry-pot-slider');
+      if (potSlider) {
+        potSlider.value = Math.round(this.potCurrentAngle);
+        potSlider.dispatchEvent(new Event('input'));
+      }
+    };
+
+    const onPointerUp = () => {
+      if (this.potIsDragging) {
+        this.potIsDragging = false;
+        if (this.controls) this.controls.enabled = true;
+      }
+      if (this.buttonIsPressed) {
+        this.buttonIsPressed = false;
+        this.pressPushButton(false);
+        if (typeof this.onPushButtonUp === 'function') this.onPushButtonUp();
+      }
+    };
+
+    dom.addEventListener('mousedown', (e) => {
+      if (onPointerDown(e.clientX, e.clientY)) return;
 
       // 2. Check 3D Arduino Uno Reset Button
       if (this.resetButtonMesh) {
@@ -2397,30 +2518,25 @@ buildBreadboard() {
       }
     });
 
-    window.addEventListener('mousemove', (e) => {
-      if (!this.potIsDragging) return;
-      const deltaX = e.movementX || 0;
-      this.potCurrentAngle = Math.max(0, Math.min(1023, this.potCurrentAngle + deltaX * 3.5));
-      this.updatePotKnob(this.potCurrentAngle);
+    window.addEventListener('mousemove', (e) => onPointerMove(e.clientX, e.clientY));
+    window.addEventListener('mouseup', onPointerUp);
 
-      const potSlider = document.getElementById('main-sensor-range') || document.getElementById('telemetry-pot-slider');
-      if (potSlider) {
-        potSlider.value = Math.round(this.potCurrentAngle);
-        potSlider.dispatchEvent(new Event('input'));
+    dom.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches.length > 0) {
+        if (onPointerDown(e.touches[0].clientX, e.touches[0].clientY)) {
+          e.preventDefault();
+        }
       }
-    });
+    }, { passive: false });
 
-    window.addEventListener('mouseup', () => {
-      if (this.potIsDragging) {
-        this.potIsDragging = false;
-        if (this.controls) this.controls.enabled = true;
+    window.addEventListener('touchmove', (e) => {
+      if (this.potIsDragging && e.touches && e.touches.length > 0) {
+        onPointerMove(e.touches[0].clientX, e.touches[0].clientY);
+        e.preventDefault();
       }
-      if (this.buttonIsPressed) {
-        this.buttonIsPressed = false;
-        this.pressPushButton(false);
-        if (typeof this.onPushButtonUp === 'function') this.onPushButtonUp();
-      }
-    });
+    }, { passive: false });
+
+    window.addEventListener('touchend', onPointerUp);
   }
 
   // =========================================================================
@@ -2456,10 +2572,11 @@ buildBreadboard() {
   }
 
   updatePotKnob(rawAngle0to1023) {
-    this.potCurrentAngle = rawAngle0to1023;
+    this.potCurrentAngle = Math.max(0, Math.min(1023, rawAngle0to1023));
     if (this.potKnobMesh) {
-      const rad = -2.44 + (rawAngle0to1023 / 1023) * 4.88;
-      this.potKnobMesh.rotation.y = -rad;
+      // 270 degree sweep: -135° (0) to +135° (1023) matching reference app
+      const angleDeg = (this.potCurrentAngle / 1023) * 270 - 135;
+      this.potKnobMesh.rotation.y = -angleDeg * (Math.PI / 180);
     }
   }
 
