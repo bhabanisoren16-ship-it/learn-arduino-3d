@@ -11,13 +11,13 @@ class CircuitBuilder {
     this.pendingPin = null;
 
     this.availableColors = [
-      { id: 'red', name: 'Red (5V Power)', hex: '#9e1a1a' },
-      { id: 'black', name: 'Black (GND Ground)', hex: '#06080e' },
-      { id: 'blue', name: 'Blue (PWM Signal)', hex: '#1d4ed8' },
-      { id: 'amber', name: 'Amber (Analog / Wiper)', hex: '#c67d0a' },
-      { id: 'green', name: 'Green (Logic / I2C)', hex: '#156d35' },
-      { id: 'orange', name: 'Orange (Servo / Sonar)', hex: '#c2410c' },
-      { id: 'purple', name: 'Purple (Tone / Audio)', hex: '#581c87' }
+      { id: 'red', name: 'Red (5V Power)', hex: '#d64a3a' },
+      { id: 'black', name: 'Black (GND Ground)', hex: '#24272f' },
+      { id: 'blue', name: 'Blue (PWM Signal)', hex: '#3d6fc4' },
+      { id: 'amber', name: 'Amber (Analog / Wiper)', hex: '#f0a53a' },
+      { id: 'green', name: 'Green (Logic / I2C)', hex: '#3fae6a' },
+      { id: 'orange', name: 'Orange (Servo / Sonar)', hex: '#f0a53a' },
+      { id: 'purple', name: 'Purple (Tone / Audio)', hex: '#8a63c9' }
     ];
 
     // Terminal Pin Definitions for interactive picking & UI lists

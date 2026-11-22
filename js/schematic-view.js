@@ -318,20 +318,20 @@ class SchematicView {
           </g>
 
           <!-- Wire D13 to Resistor -->
-          <line x1="260" y1="140" x2="360" y2="140" stroke="#0284C7" stroke-width="3"/>
+          <line x1="260" y1="140" x2="360" y2="140" stroke="#F0A53A" stroke-width="3"/>
           <g transform="translate(310, 128)">
-            <rect x="-42" y="-11" width="84" height="20" rx="4" fill="#FFFFFF" stroke="#BAE6FD" stroke-width="1.2"/>
-            <text x="0" y="3" fill="#0369A1" font-size="11" font-weight="800" text-anchor="middle">Wire (Blue)</text>
+            <rect x="-48" y="-11" width="96" height="20" rx="4" fill="#FFFFFF" stroke="#FDE68A" stroke-width="1.2"/>
+            <text x="0" y="3" fill="#D97706" font-size="11" font-weight="800" text-anchor="middle">Wire (Amber)</text>
           </g>
 
           <!-- Wire Resistor to LED -->
-          <line x1="440" y1="140" x2="520" y2="140" stroke="#D97706" stroke-width="2.5"/>
+          <line x1="440" y1="140" x2="520" y2="140" stroke="#F0A53A" stroke-width="2.5"/>
 
           <!-- Return to GND -->
-          <path d="M 550 140 L 600 140 L 600 220 L 260 220" stroke="#475569" stroke-width="2.5" fill="none"/>
+          <path d="M 550 140 L 600 140 L 600 220 L 260 220" stroke="#24272F" stroke-width="2.5" fill="none"/>
           <g transform="translate(430, 220)">
             <rect x="-105" y="-11" width="210" height="22" rx="4" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
-            <text x="0" y="4" fill="#1E293B" font-size="11" font-weight="800" text-anchor="middle">Wire (Black): Return to GND</text>
+            <text x="0" y="4" fill="#1E293B" font-size="11" font-weight="800" text-anchor="middle">Wire (Navy): Return to GND</text>
           </g>
         </svg>
       </div>

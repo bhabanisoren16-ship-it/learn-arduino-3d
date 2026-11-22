@@ -66,7 +66,7 @@ class Arduino3DWorkbench {
       this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
       this.renderer.outputEncoding = THREE.sRGBEncoding;
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.0;
+      this.renderer.toneMappingExposure = 1.04;
       this.renderer.setClearColor(0x000000, 0);
       this.container.appendChild(this.renderer.domElement);
     } catch (e) {
@@ -125,13 +125,13 @@ class Arduino3DWorkbench {
 
   setupLighting() {
     // 1. Balanced warm hemisphere light for ambient fill without desaturating deep colors
-    const hemiLight = new THREE.HemisphereLight(0xfff8ee, 0xa3937f, 0.52);
+    const hemiLight = new THREE.HemisphereLight(0xfff8ee, 0xa8967f, 0.44);
     this.scene.add(hemiLight);
 
     // 2. High-precision Key Sunlight casting crisp, natural shadows with soft contact penumbra
     // Positioned at top-left-back (-18, 36, -14) so light travels down-right-forward,
     // casting prominent soft shadows towards the bottom-right across breadboard and table grid (matching reference).
-    const keyLight = new THREE.DirectionalLight(0xfff6ea, 1.25);
+    const keyLight = new THREE.DirectionalLight(0xfff6ea, 1.20);
     keyLight.position.set(-18, 36, -14);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 2048;
@@ -147,12 +147,12 @@ class Arduino3DWorkbench {
     this.scene.add(keyLight);
 
     // 3. Subtle Cool Fill Light from opposite corner for rich volumetric 3D contrast
-    const fillLight = new THREE.DirectionalLight(0xbdd7ee, 0.38);
+    const fillLight = new THREE.DirectionalLight(0x9fbcd8, 0.32);
     fillLight.position.set(24, 20, 24);
     this.scene.add(fillLight);
 
     // 4. Back Specular Rim Light to catch metallic glints on USB shell, DC jack, crystal, and header pins
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.28);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.25);
     rimLight.position.set(-8, 22, -26);
     this.scene.add(rimLight);
   }
@@ -315,12 +315,12 @@ class Arduino3DWorkbench {
     canvas.height = 4096;
     const ctx = canvas.getContext('2d');
 
-    // 1. Exact Rich Italian Arduino Cobalt-Navy Solder Mask (#0C4573)
-    ctx.fillStyle = '#0C4573';
+    // 1. Exact Rich Italian Arduino Royal Blue Solder Mask (#3B4E85 / #42558F)
+    ctx.fillStyle = '#3B4E85';
     ctx.fillRect(0, 0, 4096, 4096);
 
     // 2. Copper Ground Pour Hatch Grid Pattern & Route Traces
-    ctx.fillStyle = '#083254';
+    ctx.fillStyle = '#26345D';
     for (let x = 0; x < 4096; x += 88) {
       ctx.fillRect(x, 0, 5, 4096);
     }
@@ -329,14 +329,14 @@ class Arduino3DWorkbench {
     }
 
     // Ground plane copper clearance zones
-    ctx.fillStyle = '#0A3B63';
+    ctx.fillStyle = '#2C3B6A';
     ctx.fillRect(1560, 2040, 960, 1800); // IC socket zone
     ctx.fillRect(140, 360, 520, 3320);   // Digital headers zone
     ctx.fillRect(3380, 1120, 560, 2600); // Power & Analog zone
 
     // 3. Sub-surface Routed Copper Traces (Gives genuine depth under solder mask)
-    ctx.strokeStyle = '#125791';
-    ctx.lineWidth = 9;
+    ctx.strokeStyle = '#5268A6';
+    ctx.lineWidth = 10;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
 
@@ -591,51 +591,51 @@ class Arduino3DWorkbench {
     canvas.height = 4096;
     const ctx = canvas.getContext('2d');
 
-    // 1. Clean Warm Cream ABS Plastic Base (#EDE6D8)
-    ctx.fillStyle = '#EDE6D8';
+    // 1. Clean Warm Parchment ABS Plastic Base (#EBE3D2)
+    ctx.fillStyle = '#EBE3D2';
     ctx.fillRect(0, 0, 4096, 4096);
 
     // Subtle beveled outer border outline
-    ctx.strokeStyle = '#807662';
+    ctx.strokeStyle = '#706652';
     ctx.lineWidth = 20;
     ctx.strokeRect(32, 32, 4032, 4032);
 
-    ctx.strokeStyle = '#C6BCA8';
+    ctx.strokeStyle = '#B8AE9A';
     ctx.lineWidth = 12;
     ctx.strokeRect(52, 52, 3992, 3992);
 
     // 2. Realistic 3D Recessed Center DIP Divider Trench
-    ctx.fillStyle = '#807662';
+    ctx.fillStyle = '#706652';
     ctx.fillRect(1972, 72, 152, 3952);
-    ctx.fillStyle = '#262016';
+    ctx.fillStyle = '#1E1A14';
     ctx.fillRect(2012, 72, 72, 3952);
     ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(2108, 72, 12, 3952);
 
-    // 3. Power Bus Rails (Crisp 28px Stripes in Red #DC2626 and Blue #1D4ED8)
+    // 3. Power Bus Rails (Crisp 28px Stripes in Red #D64A3A and Blue #3D6FC4)
     // Left Power Bus
-    ctx.fillStyle = '#DC2626';
+    ctx.fillStyle = '#D64A3A';
     ctx.fillRect(144, 120, 28, 3856); // Outer Red Line (+)
-    ctx.fillStyle = '#1D4ED8';
+    ctx.fillStyle = '#3D6FC4';
     ctx.fillRect(490, 120, 28, 3856); // Inner Blue Line (-)
 
     // Right Power Bus
-    ctx.fillStyle = '#1D4ED8';
+    ctx.fillStyle = '#3D6FC4';
     ctx.fillRect(3580, 120, 28, 3856); // Inner Blue Line (-)
-    ctx.fillStyle = '#DC2626';
+    ctx.fillStyle = '#D64A3A';
     ctx.fillRect(3926, 120, 28, 3856); // Outer Red Line (+)
 
     // Clean Plus (+) and Minus (-) Polarity Symbols at Top, Middle & Bottom
     ctx.font = '900 136px "JetBrains Mono", monospace';
     ctx.textAlign = 'center';
     [210, 1380, 2560, 3930].forEach(y => {
-      ctx.fillStyle = '#DC2626';
+      ctx.fillStyle = '#D64A3A';
       ctx.fillText('+', 158, y);
       ctx.fillText('+', 3940, y);
 
-      ctx.fillStyle = '#1D4ED8';
-      ctx.fillText('-', 504, y);
-      ctx.fillText('-', 3594, y);
+      ctx.fillStyle = '#3D6FC4';
+      ctx.fillText('−', 504, y);
+      ctx.fillText('−', 3594, y);
     });
 
     // 4. Column Letter Headers (a b c d e | f g h i j) - Technical Slate #334155
@@ -679,7 +679,7 @@ class Arduino3DWorkbench {
 
       allHoles.forEach(hx => {
         // 1. Subtle beveled outer recess
-        ctx.fillStyle = '#D6CEBE';
+        ctx.fillStyle = '#E1D7C4';
         ctx.fillRect(hx - 28, y - 28, 56, 56);
 
         // 2. Deep dark socket cavity
@@ -757,8 +757,8 @@ class Arduino3DWorkbench {
     const unoTexture = this.generateUnoTexture();
     const pcbTopMat = new THREE.MeshStandardMaterial({
       map: unoTexture,
-      roughness: 0.65,
-      metalness: 0.02
+      roughness: 0.44,
+      metalness: 0.04
     });
 
     const silkscreenPlate = new THREE.Mesh(new THREE.PlaneGeometry(14, 20), pcbTopMat);
@@ -1087,9 +1087,9 @@ buildICSPHeader(x, z) {
   }
 
   buildHeaderStrip(x, zStart, count, label, pinNames) {
-    const headerMat = new THREE.MeshStandardMaterial({ color: 0x121418, roughness: 0.8 });
-    const holeMat = new THREE.MeshStandardMaterial({ color: 0x050608, roughness: 0.95 });
-    const springMat = new THREE.MeshStandardMaterial({ color: 0xb89240, metalness: 0.7 });
+    const headerMat = new THREE.MeshStandardMaterial({ color: 0x1e222d, roughness: 0.5 });
+    const holeMat = new THREE.MeshStandardMaterial({ color: 0x080a10, roughness: 0.95 });
+    const springMat = new THREE.MeshStandardMaterial({ color: 0xc5a059, metalness: 0.8, roughness: 0.25 });
 
     const step = 0.85;
     for (let i = 0; i < count; i++) {
@@ -1341,9 +1341,13 @@ buildBreadboard() {
       const ledHole = this.getBreadboardHole(19.5, 'c');
       this.calloutTargets["LED"] = new THREE.Vector3(ledHole.x, ledHole.y + 3.2, ledHole.z);
     } else if (lessonId === 2) {
-      this.build3DResistor(this.getBreadboardHole(15, 'c'), this.getBreadboardHole(18, 'c'), "220");
-      this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0xcc1111);
-      this.calloutTargets["LED"] = new THREE.Vector3(7.475, 2.5, this.getBreadboardHole(19, 'd').z);
+      // Lesson 2: 220Ω Dumbbell Resistor (rows 10-14, col b) + 5mm Optical Red LED (rows 14-15, col c)
+      this.build3DResistor(this.getBreadboardHole(10, 'b'), this.getBreadboardHole(14, 'b'), "220");
+      this.build3DLED(this.getBreadboardHole(14, 'c'), this.getBreadboardHole(15, 'c'), 0xe8392e);
+      const resHole = this.getBreadboardHole(12, 'b');
+      this.calloutTargets["RES"] = new THREE.Vector3(resHole.x, resHole.y + 1.8, resHole.z);
+      const ledHole = this.getBreadboardHole(14.5, 'c');
+      this.calloutTargets["LED"] = new THREE.Vector3(ledHole.x, ledHole.y + 3.2, ledHole.z);
     } else if (lessonId === 3) {
       this.build3DPushButton(this.getBreadboardHole(9, 'c'));
       this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0x156d35);
@@ -1584,7 +1588,7 @@ buildBreadboard() {
     this.componentsGroup.add(resGroup);
   }
 
-  build3DLED(p1, p2, colorHex = 0xcc1111) {
+  build3DLED(p1, p2, colorHex = 0xe8392e) {
     const ledGroup = new THREE.Group();
     const pos1 = (p1 && p1.isVector3) ? p1 : (p1 && p1.x !== undefined ? p1 : this.getBreadboardHole(18, 'd'));
     const pos2 = (p2 && p2.isVector3) ? p2 : (p2 && p2.x !== undefined ? p2 : this.getBreadboardHole(20, 'd'));
@@ -1595,45 +1599,35 @@ buildBreadboard() {
 
     ledGroup.position.set(midX, bodyY, midZ);
 
-    // 1. Rich Diffused Optical Epoxy Lens - Saturated Color with Inner Luminous Glow
+    // 1. Seamless Optical Epoxy Lens Profile via LatheGeometry (Matching Dilum Sanjaya's Vc Model)
+    const points = [
+      new THREE.Vector2(0, 0),
+      new THREE.Vector2(0.98, 0),
+      new THREE.Vector2(0.98, 0.35),
+      new THREE.Vector2(0.85, 0.35),
+      new THREE.Vector2(0.85, 1.85)
+    ];
+    for (let i = 1; i <= 16; i++) {
+      const theta = (i / 16) * (Math.PI / 2);
+      points.push(new THREE.Vector2(Math.cos(theta) * 0.85, 1.85 + Math.sin(theta) * 0.85));
+    }
+    const domeGeo = new THREE.LatheGeometry(points, 36);
+
     const domeMat = new THREE.MeshStandardMaterial({
       color: colorHex,
       emissive: colorHex,
-      emissiveIntensity: 0.28,
-      roughness: 0.12,
-      metalness: 0.04,
+      emissiveIntensity: 0.20,
+      roughness: 0.16,
+      metalness: 0.02,
       transparent: true,
-      opacity: 0.95
+      opacity: 0.92
     });
 
-    // Elevated LED dome - stands tall and proud
-    this.ledMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 1.7, 28), domeMat);
-    this.ledMesh.position.y = 2.45;
+    this.ledMesh = new THREE.Mesh(domeGeo, domeMat);
+    this.ledMesh.position.y = 1.35;
     this.ledMesh.castShadow = true;
     this.ledMesh.receiveShadow = true;
     ledGroup.add(this.ledMesh);
-
-    const top = new THREE.Mesh(new THREE.SphereGeometry(0.85, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
-    top.position.y = 3.30;
-    top.castShadow = true;
-    ledGroup.add(top);
-
-    // Base Flange Rim with Cathode Flat Edge
-    const rimMat = new THREE.MeshStandardMaterial({
-      color: colorHex,
-      emissive: colorHex,
-      emissiveIntensity: 0.15,
-      roughness: 0.25
-    });
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.24, 28), rimMat);
-    rim.position.y = 1.50;
-    rim.castShadow = true;
-    ledGroup.add(rim);
-
-    // Subtle dark perimeter outline for razor-sharp visual silhouette against bright breadboard
-    const outlineMat = new THREE.LineBasicMaterial({ color: 0x440808, transparent: true, opacity: 0.6 });
-    const domeEdges = new THREE.LineSegments(new THREE.EdgesGeometry(this.ledMesh.geometry), outlineMat);
-    this.ledMesh.add(domeEdges);
 
     // Internal Silver Lead Frame (Post & Reflective Anvil with Gold Chip Die)
     const cupMat = new THREE.MeshStandardMaterial({ color: 0xdde3eb, metalness: 0.9, roughness: 0.15 });
@@ -1653,21 +1647,21 @@ buildBreadboard() {
 
     // Dynamic Point Light for interactive illumination
     this.ledLight = new THREE.PointLight(colorHex, 0, 18);
-    this.ledLight.position.set(0, 3.4, 0);
+    this.ledLight.position.set(0, 3.2, 0);
     ledGroup.add(this.ledLight);
 
     // Polished Silver Leads extending into breadboard holes
-    const leadMat = new THREE.MeshStandardMaterial({ color: 0xdde3eb, metalness: 0.9, roughness: 0.15 });
+    const leadMat = new THREE.MeshStandardMaterial({ color: 0xd2cfc8, metalness: 0.85, roughness: 0.25 });
     const relZ1 = pos1.z - midZ;
     const relZ2 = pos2.z - midZ;
 
-    const lead1 = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.6, 8), leadMat);
-    lead1.position.set(0, 0.70, relZ1);
+    const lead1 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.45, 0.14), leadMat);
+    lead1.position.set(0, 0.72, relZ1);
     lead1.castShadow = true;
     ledGroup.add(lead1);
 
-    const lead2 = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.6, 8), leadMat);
-    lead2.position.set(0, 0.70, relZ2);
+    const lead2 = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.45, 0.14), leadMat);
+    lead2.position.set(0, 0.72, relZ2);
     lead2.castShadow = true;
     ledGroup.add(lead2);
 
@@ -2079,6 +2073,9 @@ buildBreadboard() {
           if (conn.from.includes('5V') || conn.to.includes('5V')) colHex = 0xd64a3a; // Vibrant Rich Red for 5V
           if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x24272f; // Navy/Charcoal for GND
           if (conn.isBridge || conn.from.includes('Bridge') || conn.to.includes('Bridge')) colHex = 0x24272f; // Navy Ground Bridge
+        } else if (this.activeLesson && (this.activeLesson.id === 2 || this.activeLesson.slug === 'blink-an-led' || (this.activeLesson.hash && this.activeLesson.hash.includes('blink')))) {
+          if (conn.from.includes('D13') || conn.to.includes('D13')) colHex = 0xf0a53a; // Radiant Amber/Orange
+          if (conn.from.includes('GND') || conn.to.includes('GND')) colHex = 0x24272f; // Deep Navy
         }
         this.createCurved3DWire(pFrom, pTo, colHex, index, conn);
       }
@@ -2111,6 +2108,14 @@ buildBreadboard() {
   resolvePinPosition(pinName) {
     if (!pinName) return this.getBreadboardHole(15, 'a');
     const clean = pinName.trim();
+
+    // Lesson-specific pin overrides for realistic procedural layout
+    if (this.activeLesson && (this.activeLesson.id === 2 || this.activeLesson.slug === 'blink-an-led' || (this.activeLesson.hash && this.activeLesson.hash.includes('blink')))) {
+      if (clean.includes('Resistor1') || clean.includes('Res_In')) return this.getBreadboardHole(10, 'a');
+      if (clean.includes('Resistor2') || clean.includes('Res_Out')) return this.getBreadboardHole(14, 'b');
+      if (clean.includes('LED_Anode')) return this.getBreadboardHole(14, 'c');
+      if (clean.includes('LED_Cathode')) return this.getBreadboardHole(15, 'a');
+    }
 
     if (this.pinPositions[clean]) {
       return this.pinPositions[clean].clone();
@@ -2290,7 +2295,15 @@ buildBreadboard() {
 
     let apexY, bowAmount;
 
-    if (conn && (conn.from.includes('A0') || conn.to.includes('A0'))) {
+    if (this.activeLesson && (this.activeLesson.id === 2 || this.activeLesson.slug === 'blink-an-led' || (this.activeLesson.hash && this.activeLesson.hash.includes('blink')))) {
+      if (conn && (conn.from.includes('D13') || conn.to.includes('D13'))) {
+        apexY = Math.max(startPoint.y, endPoint.y) + 2.8;
+        bowAmount = -0.42;
+      } else if (conn && (conn.from.includes('GND') || conn.to.includes('GND'))) {
+        apexY = Math.max(startPoint.y, endPoint.y) + 3.1;
+        bowAmount = 0.48;
+      }
+    } else if (conn && (conn.from.includes('A0') || conn.to.includes('A0'))) {
       // Tallest arch for analog wiper wire
       apexY = Math.max(startPoint.y, endPoint.y) + 3.8;
       bowAmount = -0.65;

@@ -712,31 +712,31 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (currentLesson.id === 2) {
       calloutDefs = [
         {
-          id: 'd13',
-          icon: 'pwm',
-          title: 'PIN 13',
-          body: 'Outputs HIGH (5V) and LOW (0V) pulses.',
-          target: workbench.pinPositions["Uno.D13"],
-          offsetX: -240,
-          offsetY: -40
-        },
-        {
           id: 'resistor',
           icon: 'resistor',
           title: '220 Ω RESISTOR',
           body: 'Current limiter drops 3.0V at 13.6 mA.',
-          target: workbench.calloutTargets["RES"] || workbench.pinPositions["Breadboard.Resistor1"],
-          offsetX: 70,
-          offsetY: -70
+          target: workbench.calloutTargets["RES"] || workbench.getBreadboardHole(12, 'b'),
+          offsetX: 75,
+          offsetY: -75
         },
         {
           id: 'led',
           icon: 'led',
           title: 'LED',
           body: 'Discrete 5mm LED diode emits light when pin 13 is HIGH.',
-          target: workbench.calloutTargets["LED"] || workbench.pinPositions["Breadboard.LED_Anode"],
+          target: workbench.calloutTargets["LED"] || workbench.getBreadboardHole(14.5, 'c'),
           offsetX: 85,
           offsetY: 10
+        },
+        {
+          id: 'd13',
+          icon: 'pwm',
+          title: 'PIN 13',
+          body: 'Outputs HIGH (5V) and LOW (0V) pulses.',
+          target: workbench.pinPositions["Uno.D13"],
+          offsetX: -220,
+          offsetY: -45
         }
       ];
     } else if (currentLesson.id === 3) {

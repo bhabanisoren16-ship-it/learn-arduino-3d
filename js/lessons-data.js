@@ -85,9 +85,9 @@ void loop() {
       applications: "Status indicators, user feedback beacons, relay triggers."
     },
     pinout: [
-      { pin: "D13", function: "LED Drive Output", signal: "0V or 5V (PWM capable)" },
-      { pin: "220Ω", function: "Current Limiter", signal: "Drops 3.0V at 13.6mA" },
-      { pin: "GND", function: "Cathode Return Rail", signal: "0V Ground" }
+      { pin: "D13", function: "LED Drive Output", signal: "0V or 5V (PWM capable)", color: "#f0a53a" },
+      { pin: "220Ω", function: "Current Limiter", signal: "Drops 3.0V at 13.6mA", color: "#eedec6" },
+      { pin: "GND", function: "Cathode Return Rail", signal: "0V Ground", color: "#24272f" }
     ],
     code: `// Lesson 2: Blink an External LED
 // Switches digital output between 5V and 0V with digitalWrite() and delay()
@@ -116,9 +116,9 @@ void loop() {
       pinOutputVoltage: "5.0 V"
     },
     requiredNetlist: [
-      { from: "Uno.D13", to: "Breadboard.Resistor1", color: "blue", label: "D13 to Resistor" },
-      { from: "Breadboard.Resistor2", to: "Breadboard.LED_Anode", color: "amber", label: "Resistor to LED Anode" },
-      { from: "Breadboard.LED_Cathode", to: "Uno.GND", color: "black", label: "LED Cathode to GND" }
+      { from: "Uno.D13", to: "Breadboard.Resistor1", color: "amber", label: "D13 to 220Ω Resistor (Row 10)" },
+      { from: "Breadboard.Resistor2", to: "Breadboard.LED_Anode", color: "amber", label: "Row 14 Internal Shared Tie" },
+      { from: "Breadboard.LED_Cathode", to: "Uno.GND", color: "navy", label: "LED Cathode to GND (Row 15)" }
     ],
     sensorControls: [
       { id: "blink_rate", type: "slider", label: "Blink Delay (ms)", default: 1000, min: 100, max: 2000, step: 50, unit: "ms" }
