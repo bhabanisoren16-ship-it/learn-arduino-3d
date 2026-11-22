@@ -1,0 +1,20 @@
+{
+  "name": "learn-arduino-3d",
+  "version": "1.0.0",
+  "description": "Interactive 3D Hardware Course & Hand-Tool Workbench Manual for Arduino Uno R3",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "arduino",
+    "3d",
+    "threejs",
+    "simulator",
+    "electronics",
+    "curriculum"
+  ],
+  "author": "Antigravity",
+  "license": "MIT"
+}
+

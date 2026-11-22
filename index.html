@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Learn Arduino — interactive 3D lessons for beginners</title>
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Google Fonts: Barlow, Barlow Semi Condensed, JetBrains Mono & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Three.js 3D Engine & OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Lucide Vector Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Background Decorative PCB Circuit Traces -->
+  <svg class="traces" id="traces" aria-hidden="true"></svg>
+
+  <!-- Top App Navigation Bar -->
+  <header class="app-header">
+    <div class="brand" id="btn-brand-logo" style="cursor: pointer;" title="Learn Arduino 3D Workbench">
+      <svg class="brand-logo" viewBox="0 0 92 50" aria-hidden="true">
+        <path class="loop" d="M24 6.5a18.5 18.5 0 1 0 0 37c8.7 0 13.4-6.6 22-18.5S59.3 6.5 68 6.5a18.5 18.5 0 1 1 0 37c-8.7 0-13.4-6.6-22-18.5S32.7 6.5 24 6.5z" />
+        <path class="sign" d="M15.5 25h12M62 25h12M68 19v12" />
+      </svg>
+      <span class="brand-rule" aria-hidden="true"></span>
+      <div class="brand-text">
+        <h1>Learn Arduino</h1>
+        <p>Explore <i>·</i> Understand <i>·</i> Build</p>
+      </div>
+    </div>
+
+    <!-- Top-right status: Curriculum progress & digital clock -->
+    <section class="status" aria-label="Progress">
+      <div class="progress-card" id="btn-header-curriculum" style="cursor: pointer;" title="Open 16-Lesson Curriculum">
+        <svg viewBox="0 0 40 40" class="progress-icon" aria-hidden="true">
+          <path d="M20 10.6c-3.3-2.4-8.2-3.2-14-3v21.2c5.8-.2 10.7.6 14 3 3.3-2.4 8.2-3.2 14-3V7.6c-5.8-.2-10.7.6-14 3zM20 10.6v21.2" />
+          <path d="M3 11v21c6.3-.5 12.6.2 17 2.6 4.4-2.4 10.7-3.1 17-2.6V11" />
+        </svg>
+        <div class="progress-body">
+          <span class="progress-label">Basics</span>
+          <div class="progress-row">
+            <span class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="16" aria-valuenow="4">
+              <span class="progress-fill" id="lesson-progress-fill" style="width: 25%;"></span>
+            </span>
+            <span class="progress-count" id="lesson-progress-count">4/16</span>
+          </div>
+        </div>
+      </div>
+      <time class="clock" id="clock">
+        <span id="clock-date">NOV 14, 2026</span>
+        <span id="clock-time">08:30:15</span>
+      </time>
+    </section>
+  </header>
+
+  <!-- Main Body Layout (Left Rail + Center 3D Stage + Right Double-Card Column) -->
+  <div class="app-body-layout">
+
+    <!-- Left Slim Navigation Sidebar -->
+    <nav class="sidebar" id="main-left-rail" aria-label="Main">
+      <button class="side-toggle" id="btn-rail-collapse" aria-label="Expand sidebar" title="Toggle Sidebar">
+        <svg viewBox="0 0 24 24"><path d="M9 5.5 15.5 12 9 18.5" /></svg>
+      </button>
+      <ul class="side-nav">
+        <li class="is-active" id="btn-rail-home" title="Workbench Home">
+          <a href="#" data-nav="home" aria-label="Home">
+            <svg viewBox="0 0 32 32" class="fill"><path d="M16 4.2 3.6 15.1c-.7.6-.3 1.7.6 1.7H6v9.4c0 1 .8 1.8 1.8 1.8h5.4v-7.3h5.6V28h5.4c1 0 1.8-.8 1.8-1.8v-9.4h1.8c.9 0 1.3-1.1.6-1.7z" /></svg>
+            <span class="side-label">Home</span>
+          </a>
+        </li>
+        <li id="btn-rail-lessons" title="16 Lessons Curriculum">
+          <a href="#" data-nav="lessons" aria-label="Lessons">
+            <svg viewBox="0 0 32 32"><path d="M16 9.2C13.4 7.3 9.6 6.6 5 6.8v17.6c4.6-.2 8.4.5 11 2.4 2.6-1.9 6.4-2.6 11-2.4V6.8c-4.6-.2-8.4.5-11 2.4zM16 9.2v17.6" /><path d="M3 9.4v17.4c5-.4 9.6.2 13 2.2 3.4-2 8-2.6 13-2.2V9.4" /></svg>
+            <span class="side-label">Lessons</span>
+          </a>
+        </li>
+        <li id="btn-rail-bom" title="24-Part Hardware Kit">
+          <a href="#" data-nav="parts" aria-label="Components">
+            <svg viewBox="0 0 32 32"><rect x="8.5" y="8.5" width="15" height="15" rx="1.6" /><rect x="12" y="12" width="8" height="8" rx=".6" class="fill" /><path d="M12.5 4v4.5M16 4v4.5M19.5 4v4.5M12.5 23.5V28M16 23.5V28M19.5 23.5V28M4 12.5h4.5M4 16h4.5M4 19.5h4.5M23.5 12.5H28M23.5 16H28M23.5 19.5H28" /></svg>
+            <span class="side-label">Components</span>
+          </a>
+        </li>
+        <li id="btn-rail-mute" title="Audio Sound Toggle">
+          <a href="#" data-nav="audio" aria-label="Sound Toggle">
+            <span style="font-size: 1.25rem;">🔊</span>
+            <span class="side-label">Sound</span>
+          </a>
+        </li>
+        <li id="btn-rail-settings" title="Settings / Keyboard Guide">
+          <a href="#" data-nav="settings" aria-label="Settings">
+            <svg viewBox="0 0 32 32" class="fill"><path d="M18.3 3.5h-4.6l-.7 3.4a9.7 9.7 0 0 0-2.6 1.5L7.1 7.3 4.8 11.2l2.6 2.3a9.9 9.9 0 0 0 0 3l-2.6 2.3 2.3 3.9 3.3-1.1c.8.6 1.7 1.1 2.6 1.5l.7 3.4h4.6l.7-3.4c.9-.4 1.8-.9 2.6-1.5l3.3 1.1 2.3-3.9-2.6-2.3a9.9 9.9 0 0 0 0-3l2.6-2.3-2.3-3.9-3.3 1.1c-.8-.6-1.7-1.1-2.6-1.5zM16 11.2a4.8 4.8 0 1 1 0 9.6 4.8 4.8 0 0 1 0-9.6z" /></svg>
+            <span class="side-label">Settings</span>
+          </a>
+        </li>
+      </ul>
+      <a class="credit credit-side" href="https://x.com/DilumSanjaya" target="_blank" rel="noopener noreferrer" title="Designed by x.com/DilumSanjaya">
+        <span class="credit-text"><small>Designed by</small><b>x.com/DilumSanjaya</b></span>
+        <span class="credit-rule" aria-hidden="true"></span>
+        <svg class="credit-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.4l-5.8-7.59-6.64 7.59H.47l8.6-9.83L0 1.15h7.6l5.24 6.93zm-1.29 19.5h2.04L6.49 3.24H4.3z" /></svg>
+      </a>
+    </nav>
+
+    <!-- Center Hero 3D Stage -->
+    <main class="stage center-stage-container" id="stage">
+      
+      <!-- Three.js Canvas -->
+      <div id="viewport3d"></div>
+      <div id="schematic-container"></div>
+
+      <!-- Leaders SVG & Rich 3D Callout Cards -->
+      <svg class="leaders" id="leaders" aria-hidden="true"></svg>
+      <div class="callout-container" id="callouts"></div>
+
+      <!-- Legacy overlay fallback pins (kept hidden or synced) -->
+      <div class="pin-callout-overlay" style="display:none;">
+        <svg id="callout-lines-svg"></svg>
+        <div class="pin-pill-badge" id="badge-pin-pwm">PIN ~9 (PWM)</div>
+        <div class="pin-pill-badge" id="badge-pin-a0">PIN A0</div>
+        <div class="part-tag-badge" id="tag-pot">POTENTIOMETER</div>
+        <div class="part-tag-badge has-cyan-dot" id="tag-led">LED</div>
+      </div>
+
+      <!-- Bottom-Left Mini-Map Radar Widget -->
+      <div class="minimap minimap-widget" id="btn-minimap" title="Reset View (R)" style="cursor: pointer;">
+        <div class="minimap-board-preview"></div>
+        <div class="minimap-breadboard-preview"></div>
+        <span class="minimap-expand-corner"><i data-lucide="maximize-2" style="width:10px;height:10px;"></i></span>
+      </div>
+
+      <!-- Floating Breadboard Studio Tools Bar -->
+      <div class="studio-tools-floating">
+        <button class="studio-tool-btn active" id="tool-btn-move" title="Hand Move Tool: Orbit &amp; Inspect (Key: M)">
+          <i data-lucide="hand" style="width:13px;height:13px;"></i>
+          <span>Move</span>
+        </button>
+        <button class="studio-tool-btn" id="tool-btn-wire" title="Wire Connect Tool: Route Jumper Wires (Key: W)">
+          <i data-lucide="git-commit" style="width:13px;height:13px;"></i>
+          <span>Wire</span>
+        </button>
+        <button class="studio-tool-btn" id="tool-btn-cutter" title="Wire Cutter Tool: Snip Wire Connections (Key: C)">
+          <i data-lucide="scissors" style="width:13px;height:13px;"></i>
+          <span>Cut</span>
+        </button>
+        <div class="studio-tool-divider"></div>
+        <button class="studio-action-btn" id="btn-auto-wire" title="Auto-Route verified preset wires for this lesson">
+          <i data-lucide="zap" style="width:12px;height:12px;"></i>
+          <span>Auto-Wire</span>
+        </button>
+        <button class="studio-action-btn" id="btn-check-circuit" title="Verify Netlist against schematic">
+          <i data-lucide="check-circle-2" style="width:12px;height:12px;"></i>
+          <span>Check Netlist</span>
+        </button>
+        <button class="studio-action-btn" id="btn-clear-wires" title="Remove all wires from breadboard">
+          <i data-lucide="trash-2" style="width:12px;height:12px;"></i>
+        </button>
+      </div>
+
+      <!-- Floating 3D Viewbar Controls Toolbar -->
+      <div class="viewbar" id="viewbar" role="toolbar" aria-label="3D view">
+        <button data-view="left" id="hud-rot-left" title="Turn left (Q)" aria-label="Turn left">
+          <svg viewBox="0 0 24 24"><path d="M4.5 10.5A8 8 0 1 1 6 17" /><path d="M4 5v5.8h5.8" /></svg>
+        </button>
+        <button data-view="right" id="hud-rot-right" title="Turn right (E)" aria-label="Turn right">
+          <svg viewBox="0 0 24 24"><path d="M19.5 10.5A8 8 0 1 0 18 17" /><path d="M20 5v5.8h-5.8" /></svg>
+        </button>
+        <span class="viewbar-sep"></span>
+        <button data-view="out" id="hud-zoom-out" title="Zoom out (−)" aria-label="Zoom out">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14" /></svg>
+        </button>
+        <button data-view="in" id="hud-zoom-in" title="Zoom in (+)" aria-label="Zoom in">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+        </button>
+        <span class="viewbar-sep"></span>
+        <button data-view="reset" class="compass" id="hud-fit-all" title="Reset view (R)" aria-label="Reset view">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><g class="compass-needle"><path d="M12 5.2 14.2 12h-4.4z" class="fill" /><path d="M12 18.8 9.8 12h4.4z" /></g></svg>
+        </button>
+        <span class="viewbar-sep"></span>
+        <button data-view="flow" class="toggle" id="btn-view-flow" title="Current flow (F)" aria-label="Show current flow">
+          <svg viewBox="0 0 24 24"><path d="M2.5 15.5c4.2 0 5.3-7 9.5-7s5.3 7 9.5 7" /><circle cx="6.6" cy="13" r="1.7" class="fill" /><circle cx="12" cy="8.5" r="1.7" class="fill" /><circle cx="17.4" cy="13" r="1.7" class="fill" /></svg>
+        </button>
+        <button data-view="schematic" class="toggle" id="btn-view-2d" title="Schematic (C)" aria-label="Show schematic">
+          <svg viewBox="0 0 24 24"><path d="M1.5 12h4.2l1.6-4 2.6 8 2.6-8 2.6 8 1.6-4h5.8" /></svg>
+        </button>
+      </div>
+
+      <!-- Hidden 3D/2D switchers for backward compatibility -->
+      <button id="btn-view-3d" style="display:none;"></button>
+      <button id="hud-info" style="display:none;"></button>
+      <button id="hud-pan-up" style="display:none;"></button>
+      <button id="hud-pan-down" style="display:none;"></button>
+
+    </main>
+
+    <!-- Right Side Dual-Card Column (Info Card + Code Card) -->
+    <aside class="right-side-panel">
+      
+      <!-- CARD 1: INFO CARD (Overview, Pinout, Example, Specifications) -->
+      <section class="info-card" id="info-card" aria-label="Lesson information">
+        <div class="tabs" role="tablist">
+          <button role="tab" aria-selected="true" class="inspector-tab-btn is-active active" data-tab="tab-overview">OVERVIEW</button>
+          <button role="tab" aria-selected="false" class="inspector-tab-btn" data-tab="tab-pinout">PINOUT</button>
+          <button role="tab" aria-selected="false" class="inspector-tab-btn" data-tab="tab-example">EXAMPLE</button>
+          <button role="tab" aria-selected="false" class="inspector-tab-btn" data-tab="tab-specs">SPECIFICATIONS</button>
+          <button class="expand tab-expand-btn" id="btn-expand-info" aria-label="Expand panel" title="Expand panel">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 17L17 7M17 7H9M17 7V15" />
+            </svg>
+          </button>
+        </div>
+        <div class="info-body" role="tabpanel">
+          <div class="info-content" id="info-content">
+            <!-- Dynamically populated by app.js (Overview, Pinout, Example, Specs) -->
+            <div id="tab-overview-content" class="inspector-tab-pane active-pane">
+              <h2 class="lesson-main-title" id="lesson-main-title">TURN A KNOB</h2>
+              <p class="lede lesson-description-text" id="lesson-desc-text">
+                A potentiometer is a resistor with a slider. Turning the knob moves the middle leg anywhere from 0 V to 5 V, and an analog pin turns that into a number.
+              </p>
+              <ul class="features" id="hints-chips-container">
+                <!-- Populated dynamically -->
+              </ul>
+            </div>
+            <div id="tab-pinout-content" class="inspector-tab-pane" style="display:none;"></div>
+            <div id="tab-example-content" class="inspector-tab-pane" style="display:none;"></div>
+            <div id="tab-specs-content" class="inspector-tab-pane" style="display:none;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARD 2: CODE CARD (Try it yourself & Serial Monitor) -->
+      <section class="code-card" id="code-card" aria-label="Try it yourself" data-state="idle">
+        <header>
+          <h2>TRY IT YOURSELF</h2>
+          <div class="code-actions">
+            <button class="btn-ghost" id="btn-export-code" aria-label="Export .ino" title="Export .ino">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            </button>
+            <button class="btn-ghost btn-copy" id="btn-copy-code" aria-label="Copy code" title="Copy code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+            <button class="btn-ghost btn-expand" id="btn-expand-code" aria-label="Expand code" title="Expand code">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;"><path d="M7 17L17 7M17 7H9M17 7V15" /></svg>
+            </button>
+            <button class="btn-ghost" id="btn-reset-code" aria-label="Reset Code" title="Reset Code" style="display:none;">
+              <i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i>
+            </button>
+            <button class="btn-run" id="btn-verify-run" aria-label="Run sketch" title="Run sketch (Space)">
+              <svg viewBox="0 0 24 24"><path d="M7.5 4.8v14.4L19 12z" class="fill" /></svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="code-wrap">
+          <!-- Inset Code Editor -->
+          <div class="code-container-inset">
+            <div class="code-line-numbers" id="code-line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7</div>
+            <textarea class="code-textarea" id="code-editor" spellcheck="false"></textarea>
+          </div>
+
+          <!-- Live Potentiometer / Sensor Slider / Push Button Control -->
+          <div class="sensor-control-card" id="sensor-slider-card">
+            <div class="sensor-control-label-row">
+              <span id="sensor-slider-label">Potentiometer (A0)</span>
+              <span id="sensor-slider-value" style="font-family:var(--font-mono); color:var(--teal); font-weight:700;">620 ADC (3.03V)</span>
+            </div>
+            <input type="range" id="main-sensor-range" min="0" max="1023" value="620" class="sensor-slider-cad">
+            <button id="main-push-btn" class="sensor-push-btn" style="display:none;" title="Press &amp; Hold Button">
+              <span>🔘 PUSH BUTTON (D2): PRESS &amp; HOLD</span>
+            </button>
+          </div>
+
+          <!-- Resizable Serial Monitor Console Drawer -->
+          <div class="console" id="console-drawer">
+            <div class="console-grip" id="console-grip" role="separator" aria-orientation="horizontal" aria-label="Resize serial monitor"></div>
+            <div class="console-head">
+              <span class="console-dot" id="console-status-dot"></span>
+              <span class="console-title">Serial monitor</span>
+              <span class="console-status" id="console-status-text">Stopped</span>
+              <button class="icon-btn-micro" id="btn-clear-serial" title="Clear Serial Terminal" style="margin-right:6px;">
+                <i data-lucide="trash-2" style="width:11px;height:11px;"></i>
+              </button>
+              <button class="console-close" id="btn-close-console" aria-label="Stop sketch">
+                <svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17" /></svg>
+              </button>
+            </div>
+            <div class="console-lines" id="serial-log">Ready: Select a lesson or click Play to run.</div>
+            <div class="serial-prompt-row">
+              <input type="text" class="serial-input" id="serial-input" placeholder="Send serial command...">
+              <button class="serial-send-btn" id="btn-serial-send" title="Send to UART at 9600 baud">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+  </div>
+
+  <!-- Bottom Horizontal Lessons Strip -->
+  <section class="lessons bottom-lessons-bar" aria-label="Lessons">
+    <h2>Lessons</h2>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="carousel-nav-btn" id="carousel-prev-btn" title="Previous Lessons"><i data-lucide="chevron-left" style="width:16px;height:16px;"></i></button>
+      <ol class="lesson-list carousel-cards-track" id="carousel-track">
+        <!-- Dynamically generated lesson cards matching reference -->
+      </ol>
+      <button class="carousel-nav-btn" id="carousel-next-btn" title="Next Lessons"><i data-lucide="chevron-right" style="width:16px;height:16px;"></i></button>
+    </div>
+  </section>
+
+  <!-- MODAL: 24-Part Hardware Kit BOM -->
+  <div class="modal-overlay" id="bom-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">PromptShipped 24-Part Hardware Kit</div>
+        <button class="modal-close-btn" id="btn-close-bom">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="bom-grid" id="bom-grid-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: 16-Lesson Curriculum -->
+  <div class="modal-overlay" id="lessons-modal">
+    <div class="modal-dialog" style="max-width: 960px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">16 Lessons Interactive Curriculum</div>
+          <div style="font-size: 0.76rem; color: var(--muted); margin-top: 2px;">
+            Hands-on Arduino Uno R3 lessons with 3D circuits, 2D schematics, live C++ code, and telemetry
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btn-close-lessons">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="lessons-grid" id="lessons-grid-container"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Workbench Guide & Shortcuts -->
+  <div class="modal-overlay" id="settings-modal">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Workbench Guide & Keyboard Shortcuts</div>
+          <div style="font-size: 0.76rem; color: var(--muted); margin-top: 2px;">
+            Warm Paper CAD Simulator · Designed for intuitive hardware exploration
+          </div>
+        </div>
+        <button class="modal-close-btn" id="btn-close-settings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-modal-content">
+          <div class="guide-section-block">
+            <h4 class="guide-block-title">🎮 3D Workbench Navigation</h4>
+            <div class="guide-block-desc">
+              <p>• <strong>Orbit / Rotate:</strong> Left-click and drag anywhere on the 3D canvas, or press <kbd>Q</kbd> / <kbd>E</kbd>.</p>
+              <p>• <strong>Pan Camera:</strong> Right-click and drag, or use <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>.</p>
+              <p>• <strong>Zoom:</strong> Mouse scroll wheel, or click the <strong>+</strong> / <strong>−</strong> buttons on the bottom floating viewbar.</p>
+              <p>• <strong>Reset View:</strong> Click the compass needle icon on the viewbar or press <kbd>R</kbd> to frame the entire circuit.</p>
+            </div>
+          </div>
+
+          <div class="guide-section-block">
+            <h4 class="guide-block-title">⌨️ Keyboard Shortcuts</h4>
+            <div class="guide-shortcuts-table">
+              <div class="shortcut-row"><span class="shortcut-desc">Run / Stop Active Simulation</span><kbd class="shortcut-kbd">Space</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Reset 3D Camera Frame</span><kbd class="shortcut-kbd">R</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Switch to Overview Tab</span><kbd class="shortcut-kbd">1</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Switch to Pinout Tab</span><kbd class="shortcut-kbd">2</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Switch to Example & Challenges Tab</span><kbd class="shortcut-kbd">3</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Switch to Specifications Tab</span><kbd class="shortcut-kbd">4</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Toggle 2D Schematic</span><kbd class="shortcut-kbd">C</kbd></div>
+              <div class="shortcut-row"><span class="shortcut-desc">Close Open Dialog / Modal</span><kbd class="shortcut-kbd">Esc</kbd></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/components-data.js"></script>
+  <script src="js/lessons-data.js"></script>
+  <script src="js/audio-synth.js"></script>
+  <script src="js/three-scene.js"></script>
+  <script src="js/schematic-view.js"></script>
+  <script src="js/circuit-builder.js"></script>
+  <script src="js/arduino-simulator.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
