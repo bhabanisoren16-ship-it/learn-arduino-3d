@@ -222,31 +222,36 @@ void loop() {
       applications: "Audio volume faders, motor speed throttles, lighting dimmers, calibration dials."
     },
     pinout: [
-      { pin: "5V", function: "Pot (left)", signal: "Top of the voltage divider.", color: "#d64a3a" },
-      { pin: "A0", function: "Pot (middle)", signal: "The wiper: 0–5 V as you turn.", color: "#3fae6a" },
-      { pin: "GND", function: "Pot (right)", signal: "Bottom of the divider.", color: "#2f3547" },
-      { pin: "~D9", function: "220 Ω → LED", signal: "PWM output sets the brightness.", color: "#f0a53a" },
-      { pin: "GND", function: "Bridge 11b → 20e", signal: "Ground return to LED cathode.", color: "#2f3547" }
+      { pin: "5V", function: "Potentiometer Outer Leg 1", signal: "Top of the voltage divider (+5.0 V).", color: "#d64a3a" },
+      { pin: "A0", function: "Potentiometer Middle Leg 2", signal: "The wiper: 0–5 V as you turn.", color: "#3fae6a" },
+      { pin: "GND", function: "Potentiometer Outer Leg 3", signal: "Bottom of divider (0 V ground).", color: "#2f3547" },
+      { pin: "~D9", function: "220 Ω Resistor → LED Anode", signal: "PWM output sets the brightness (0–255).", color: "#f0a53a" },
+      { pin: "GND", function: "LED Cathode (Short Leg)", signal: "Ground return via Row 11–20 bridge (0 V).", color: "#2f3547" }
     ],
     callouts: [
       { anchor: "part:pot", icon: "knob", title: "Potentiometer", body: "Drag around the knob to turn it.", x: -162, y: -350, w: 252, side: "bottom", at: 200, leg: 30, ring: true },
       { anchor: "pin:A0", icon: "wave", wide: true, title: "Pin A0", body: "Reads the knob as a number, 0–1023.", x: -498, y: 130, w: 252, side: "top", at: 150, leg: 40, ring: true },
       { anchor: "part:led", icon: "led", title: "LED", body: "Brightness follows the knob.", x: 290, y: -350, w: 238, side: "bottom", at: 40, leg: 30, ring: true },
-      { anchor: "pin:D9", icon: "pwm", wide: true, title: "Pin ~9 (PWM)", body: "Dims the LED with fast pulses.", x: 270, y: 160, w: 238, side: "left", at: 46, leg: 40, ring: true }
+      { anchor: "pin:D9", icon: "pwm", wide: true, title: "Pin ~9 (PWM)", body: "Controls the LED with fast pulses.", x: 270, y: 160, w: 238, side: "left", at: 46, leg: 40, ring: true }
     ],
-    code: `const int POT = A0;
-const int LED = 9;
+    code: `// Turn a knob: a potentiometer on A0 sets the brightness of an LED on pin 9.
+const int KNOB_PIN = A0;
+const int LED_PIN = 9; // must be a ~ (PWM) pin
 
 void setup() {
+  pinMode(LED_PIN, OUTPUT);
   Serial.begin(9600);
-  pinMode(LED, OUTPUT);
 }
 
 void loop() {
-  int value = analogRead(POT);  // 0-1023
-  analogWrite(LED, value / 4);  // 0-255
-  Serial.println(value);
-  delay(50);
+  int raw = analogRead(KNOB_PIN); // 0 .. 1023
+  int bright = raw / 4;           // 0 .. 255
+  analogWrite(LED_PIN, bright);
+  Serial.print("knob = ");
+  Serial.print(raw);
+  Serial.print(" brightness = ");
+  Serial.println(bright);
+  delay(100);
 }`,
     specifications: {
       potentiometerResistance: "10 kΩ linear taper, 270° travel",
@@ -256,11 +261,11 @@ void loop() {
       readTime: "≈ 100 µs per analogRead()"
     },
     requiredNetlist: [
-      { from: "Uno.5V", to: "Breadboard.Pot_Leg1", color: "red", label: "Wire 1 (Red): Uno 5V → Row 9a (Pot Top)" },
-      { from: "Uno.A0", to: "Breadboard.Pot_Leg2", color: "green", label: "Wire 2 (Green): Uno A0 → Row 10a (Pot Wiper)" },
-      { from: "Uno.GND", to: "Breadboard.Pot_Leg3", color: "navy", label: "Wire 3 (Navy): Uno GND → Row 11a (Pot Bottom)" },
-      { from: "Uno.D9", to: "Breadboard.Resistor1", color: "orange", label: "Wire 4 (Orange): Uno PWM ~9 → Row 15a (Resistor)" },
-      { from: "Breadboard.Bridge_GND", to: "Breadboard.Bridge_Cathode", color: "navy", label: "Wire 5 (Navy): Ground Bridge 11b → 20e", isBridge: true }
+      { from: "Uno.5V", to: "Breadboard.Pot_Leg1", color: "red", label: "Wire 1 (Red): Uno 5V → Potentiometer Outer Leg 1" },
+      { from: "Breadboard.Pot_Leg2", to: "Uno.A0", color: "green", label: "Wire 2 (Green): Potentiometer Middle Leg 2 → Uno A0" },
+      { from: "Uno.GND", to: "Breadboard.Pot_Leg3", color: "black", label: "Wire 3 (Black): Uno GND → Potentiometer Outer Leg 3" },
+      { from: "Uno.D9", to: "Breadboard.Resistor1", color: "yellow", label: "Wire 4 (Yellow/Amber): Uno PWM ~9 → 220 Ω Resistor → LED Anode" },
+      { from: "Breadboard.Bridge_GND", to: "Breadboard.Bridge_Cathode", color: "black", isBridge: true, label: "Wire 5 (Black Bridge): GND Rail (Row 11) → LED Cathode (Row 20)" }
     ],
     sensorControls: [
       { id: "knob_raw", type: "knob", label: "10 kΩ Potentiometer (A0)", default: 620, min: 0, max: 1023, step: 1, unit: "ADC" }

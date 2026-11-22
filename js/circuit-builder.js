@@ -200,7 +200,11 @@ class CircuitBuilder {
     if (p1 === p2) return true;
     const clean1 = p1.toLowerCase().replace(/[^a-z0-9]/g, '');
     const clean2 = p2.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return clean1.includes(clean2) || clean2.includes(clean1);
+    if (clean1.includes(clean2) || clean2.includes(clean1)) return true;
+    // Ground return aliases: Bridge_GND equates to Uno.GND / Pot_Leg3, Bridge_Cathode equates to LED_Cathode
+    if ((clean1.includes('bridge') && clean2.includes('gnd')) || (clean2.includes('bridge') && clean1.includes('gnd'))) return true;
+    if ((clean1.includes('bridge') && clean2.includes('cathode')) || (clean2.includes('bridge') && clean1.includes('cathode'))) return true;
+    return false;
   }
 
   notifyUI(statusText) {

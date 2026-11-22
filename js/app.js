@@ -359,14 +359,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const code = editor ? editor.value : currentLesson.code;
     simulator.runSketch(code, currentLesson);
 
-    // If Lesson 4 (#knob), start high-fidelity serial output stream
+    // If Lesson 4 (#knob), start high-fidelity serial output stream matching guide: "knob = X brightness = Y"
     if (currentLesson.id === 4) {
       if (telemetryInterval) clearInterval(telemetryInterval);
       telemetryInterval = setInterval(() => {
         if (!isSimActive) return;
         const raw = parseInt(mainRange.value, 10);
+        const bright = Math.floor(raw / 4);
         const div = document.createElement('div');
-        div.textContent = `${raw}`;
+        div.textContent = `knob = ${raw} brightness = ${bright}`;
         serialOutputElem.appendChild(div);
         serialOutputElem.scrollTop = serialOutputElem.scrollHeight;
         if (serialOutputElem.children.length > 50) {
@@ -848,10 +849,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       cardX = Math.max(16, Math.min(w - cardW - 20, cardX));
       cardY = Math.max(16, Math.min(h - cardH - 64, cardY));
-      placedCards.push({ x: cardX, y: cardY });
+      placedCards.push({ id: c.id, x: cardX, y: cardY });
 
       cardsHtml += `
-        <div class="callout" style="left:${cardX}px; top:${cardY}px;">
+        <div class="callout" data-callout-id="${c.id}" style="left:${cardX}px; top:${cardY}px;">
           <div class="callout-icon">${getIcon(c.icon)}</div>
           <div class="callout-text">
             <h3>${c.title}</h3>
@@ -882,7 +883,18 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
-    calloutsContainer.innerHTML = cardsHtml;
+    const existingCards = calloutsContainer.querySelectorAll('.callout');
+    const existingIds = Array.from(existingCards).map(el => el.getAttribute('data-callout-id')).join(',');
+    const newIds = placedCards.map(p => p.id).join(',');
+
+    if (existingIds === newIds && existingCards.length === placedCards.length) {
+      placedCards.forEach((p, idx) => {
+        existingCards[idx].style.left = `${p.x}px`;
+        existingCards[idx].style.top = `${p.y}px`;
+      });
+    } else {
+      calloutsContainer.innerHTML = cardsHtml;
+    }
     leadersSvg.innerHTML = linesHtml;
   }
 
