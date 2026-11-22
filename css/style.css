@@ -291,8 +291,7 @@ body {
   width: 24px;
   padding: 8px 0;
 }
-.sidebar.rail-collapsed .side-nav,
-.sidebar.rail-collapsed .credit-side {
+.sidebar.rail-collapsed .side-nav {
   opacity: 0;
   pointer-events: none;
 }
@@ -372,32 +371,6 @@ body {
 }
 .side-label {
   display: none;
-}
-
-.credit-side {
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  text-decoration: none;
-  opacity: 0.8;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
-  transition: opacity 0.2s;
-}
-.credit-side:hover {
-  opacity: 1;
-  color: var(--navy);
-}
-.credit-side .credit-x {
-  width: 14px;
-  height: 14px;
-  fill: var(--navy);
-  transform: rotate(180deg);
 }
 
 /* =========================================================================
