@@ -647,8 +647,8 @@ document.addEventListener('DOMContentLoaded', () => {
           title: 'POTENTIOMETER',
           body: 'Drag around the knob to turn it.',
           target: workbench.calloutTargets["POT"] || workbench.pinPositions["Breadboard.Pot_Leg2"],
-          offsetX: 85,
-          offsetY: -80
+          offsetX: 75,
+          offsetY: -75
         },
         {
           id: 'led',
@@ -656,8 +656,8 @@ document.addEventListener('DOMContentLoaded', () => {
           title: 'LED',
           body: 'Brightness follows the knob.',
           target: workbench.calloutTargets["LED"] || workbench.pinPositions["Breadboard.LED_Anode"],
-          offsetX: 90,
-          offsetY: 0
+          offsetX: 85,
+          offsetY: -15
         },
         {
           id: 'a0',
@@ -666,7 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
           body: 'Reads the knob as a number, 0–1023.',
           target: workbench.pinPositions["Uno.A0"],
           offsetX: -190,
-          offsetY: 90
+          offsetY: 35
         },
         {
           id: 'd9',
@@ -674,8 +674,8 @@ document.addEventListener('DOMContentLoaded', () => {
           title: 'PIN ~9 (PWM)',
           body: 'Controls the LED with fast pulses.',
           target: workbench.pinPositions["Uno.D9"],
-          offsetX: -260,
-          offsetY: 40
+          offsetX: -195,
+          offsetY: -45
         }
       ];
     } else if (currentLesson.id === 1) {

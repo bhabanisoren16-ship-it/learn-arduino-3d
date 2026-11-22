@@ -52,10 +52,10 @@ class Arduino3DWorkbench {
     this.scene = new THREE.Scene();
     this.scene.background = null;
 
-    // 2. Camera setup - Isometric CAD Perspective (Low FOV 30 deg matching reference)
-    this.camera = new THREE.PerspectiveCamera(30, width / height, 0.1, 1000);
-    this.camera.position.set(-14, 25, 25);
-    this.camera.lookAt(0, 1.0, 0);
+    // 2. Camera setup - Isometric CAD Perspective (Low FOV 32 deg matching reference)
+    this.camera = new THREE.PerspectiveCamera(32, width / height, 0.1, 1000);
+    this.camera.position.set(-2.0, 27.0, 29.0);
+    this.camera.lookAt(0.5, 1.0, 0);
 
     // 3. WebGL Renderer with High-Precision Soft Shadows & Filmic Tone Mapping
     try {
@@ -125,13 +125,13 @@ class Arduino3DWorkbench {
 
   setupLighting() {
     // 1. Balanced warm hemisphere light for ambient fill without desaturating deep colors
-    const hemiLight = new THREE.HemisphereLight(0xfff8ee, 0xa3937f, 0.40);
+    const hemiLight = new THREE.HemisphereLight(0xfff8ee, 0xa3937f, 0.52);
     this.scene.add(hemiLight);
 
     // 2. High-precision Key Sunlight casting crisp, natural shadows with soft contact penumbra
     // Positioned at top-left-back (-18, 36, -14) so light travels down-right-forward,
     // casting prominent soft shadows towards the bottom-right across breadboard and table grid (matching reference).
-    const keyLight = new THREE.DirectionalLight(0xfff6ea, 1.20);
+    const keyLight = new THREE.DirectionalLight(0xfff6ea, 1.25);
     keyLight.position.set(-18, 36, -14);
     keyLight.castShadow = true;
     keyLight.shadow.mapSize.width = 2048;
@@ -147,12 +147,12 @@ class Arduino3DWorkbench {
     this.scene.add(keyLight);
 
     // 3. Subtle Cool Fill Light from opposite corner for rich volumetric 3D contrast
-    const fillLight = new THREE.DirectionalLight(0xbdd7ee, 0.28);
+    const fillLight = new THREE.DirectionalLight(0xbdd7ee, 0.38);
     fillLight.position.set(24, 20, 24);
     this.scene.add(fillLight);
 
     // 4. Back Specular Rim Light to catch metallic glints on USB shell, DC jack, crystal, and header pins
-    const rimLight = new THREE.DirectionalLight(0xffffff, 0.22);
+    const rimLight = new THREE.DirectionalLight(0xffffff, 0.28);
     rimLight.position.set(-8, 22, -26);
     this.scene.add(rimLight);
   }
@@ -1240,7 +1240,7 @@ buildBreadboard() {
     this.pinPositions["Breadboard.Resistor1"] = this.getBreadboardHole(15, 'a');
     this.pinPositions["Breadboard.Resistor2"] = this.getBreadboardHole(18, 'c');
     this.pinPositions["Breadboard.LED_Anode"] = this.getBreadboardHole(18, 'c');
-    this.pinPositions["Breadboard.LED_Cathode"] = this.getBreadboardHole(20, 'd');
+    this.pinPositions["Breadboard.LED_Cathode"] = this.getBreadboardHole(20, 'a');
     this.pinPositions["Breadboard.Bridge_GND"] = this.getBreadboardHole(11, 'b');
     this.pinPositions["Breadboard.Bridge_Cathode"] = this.getBreadboardHole(20, 'e');
 
@@ -1334,9 +1334,9 @@ buildBreadboard() {
       this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0xcc1111);
 
       const potHole = this.getBreadboardHole(10, 'e');
-      this.calloutTargets["POT"] = new THREE.Vector3(9.8, potHole.y + 2.5, potHole.z);
+      this.calloutTargets["POT"] = new THREE.Vector3(9.8, potHole.y + 3.2, potHole.z);
       const ledHole = this.getBreadboardHole(19, 'd');
-      this.calloutTargets["LED"] = new THREE.Vector3(7.475, ledHole.y + 1.8, ledHole.z);
+      this.calloutTargets["LED"] = new THREE.Vector3(7.475, ledHole.y + 3.5, ledHole.z);
     } else if (lessonId === 2) {
       this.build3DResistor(this.getBreadboardHole(15, 'c'), this.getBreadboardHole(18, 'c'), "220");
       this.build3DLED(this.getBreadboardHole(18, 'd'), this.getBreadboardHole(20, 'd'), 0xcc1111);
@@ -1375,7 +1375,7 @@ buildBreadboard() {
   // HARDWARE COMPONENTS (Exact Colors from Reference Image)
   // =========================================================================
 
-    build3DPotentiometer(anchor) {
+  build3DPotentiometer(anchor) {
     const potGroup = new THREE.Group();
     const h10 = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(10, 'e'));
     const h9 = this.getBreadboardHole(9, 'e');
@@ -1385,59 +1385,59 @@ buildBreadboard() {
     potGroup.position.set(9.8, h10.y, h10.z);
     potGroup.name = "PotentiometerGroup";
 
-    // 1. Vibrant Royal Technical Blue Base (#0284C7)
-    const baseMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.55, metalness: 0.02 });
-    const base = new THREE.Mesh(new THREE.BoxGeometry(2.8, 1.8, 2.8), baseMat);
-    base.position.y = 0.9;
+    // 1. Vibrant Royal Technical Blue Base (#0284C7) with Crisp Edge Geometry
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.45, metalness: 0.04 });
+    const base = new THREE.Mesh(new THREE.BoxGeometry(3.2, 2.0, 3.2), baseMat);
+    base.position.y = 1.0;
     base.castShadow = true;
     base.receiveShadow = true;
 
     const baseEdges = new THREE.LineSegments(
       new THREE.EdgesGeometry(base.geometry),
-      new THREE.LineBasicMaterial({ color: 0x035287, transparent: true, opacity: 0.65 })
+      new THREE.LineBasicMaterial({ color: 0x024875, transparent: true, opacity: 0.75 })
     );
     base.add(baseEdges);
     potGroup.add(base);
 
     // 2. Threaded Bushing, Metal Washer & Brass Hex Nut
-    const collarMat = new THREE.MeshStandardMaterial({ color: 0xc8c4bc, roughness: 0.25, metalness: 0.75 });
-    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.8, 24), collarMat);
-    collar.position.y = 2.0;
+    const collarMat = new THREE.MeshStandardMaterial({ color: 0xd0ccd4, roughness: 0.22, metalness: 0.8 });
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.85, 24), collarMat);
+    collar.position.y = 2.15;
     collar.castShadow = true;
     potGroup.add(collar);
 
-    const washerMat = new THREE.MeshStandardMaterial({ color: 0xb5afa5, roughness: 0.2, metalness: 0.85 });
-    const washer = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.35, 0.06, 24), washerMat);
-    washer.position.y = 1.83;
+    const washerMat = new THREE.MeshStandardMaterial({ color: 0xc4c0b8, roughness: 0.18, metalness: 0.88 });
+    const washer = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 0.08, 24), washerMat);
+    washer.position.y = 2.04;
     potGroup.add(washer);
 
-    const nutMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.2, metalness: 0.9 });
-    const nut = new THREE.Mesh(new THREE.CylinderGeometry(1.2, 1.2, 0.25, 6), nutMat);
-    nut.position.y = 1.95;
+    const nutMat = new THREE.MeshStandardMaterial({ color: 0xe5b022, roughness: 0.18, metalness: 0.92 });
+    const nut = new THREE.Mesh(new THREE.CylinderGeometry(1.25, 1.25, 0.28, 6), nutMat);
+    nut.position.y = 2.18;
     nut.castShadow = true;
     potGroup.add(nut);
 
-    // 3. Dark Charcoal Cylindrical Dial Knob (#14171E) with Bold White Line Pointer on Top
+    // 3. Charcoal Cylindrical Dial Knob (#181B22) with Bold Pure White Indicator Line on Top
     this.potKnobMesh = new THREE.Group();
-    this.potKnobMesh.position.y = 2.5;
+    this.potKnobMesh.position.y = 2.75;
 
-    const knobMat = new THREE.MeshStandardMaterial({ color: 0x14171e, roughness: 0.55 });
-    const knobCyl = new THREE.Mesh(new THREE.CylinderGeometry(1.22, 1.22, 1.45, 32), knobMat);
+    const knobMat = new THREE.MeshStandardMaterial({ color: 0x181b22, roughness: 0.50 });
+    const knobCyl = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.35, 1.55, 32), knobMat);
     knobCyl.castShadow = true;
 
     const knobEdges = new THREE.LineSegments(
       new THREE.EdgesGeometry(knobCyl.geometry),
-      new THREE.LineBasicMaterial({ color: 0x06070a, transparent: true, opacity: 0.65 })
+      new THREE.LineBasicMaterial({ color: 0x050608, transparent: true, opacity: 0.8 })
     );
     knobCyl.add(knobEdges);
     this.potKnobMesh.add(knobCyl);
 
     // 28 Vertical grip ridges around dial
-    const ridgeMat = new THREE.MeshStandardMaterial({ color: 0x0e1015, roughness: 0.6 });
+    const ridgeMat = new THREE.MeshStandardMaterial({ color: 0x0f1116, roughness: 0.55 });
     for (let i = 0; i < 28; i++) {
       const angle = (i * Math.PI * 2) / 28;
-      const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.08, 1.42, 0.12), ridgeMat);
-      ridge.position.set(Math.cos(angle) * 1.22, 0, Math.sin(angle) * 1.22);
+      const ridge = new THREE.Mesh(new THREE.BoxGeometry(0.09, 1.50, 0.14), ridgeMat);
+      ridge.position.set(Math.cos(angle) * 1.35, 0, Math.sin(angle) * 1.35);
       ridge.rotation.y = -angle;
       this.potKnobMesh.add(ridge);
     }
@@ -1445,31 +1445,29 @@ buildBreadboard() {
     // High-Contrast Pure White Pointer Line on Top Surface
     const pointerMat = new THREE.MeshStandardMaterial({
       color: 0xffffff,
-      roughness: 0.15
+      roughness: 0.1
     });
     const pointer = new THREE.Mesh(
-      new THREE.BoxGeometry(0.24, 0.08, 1.85),
+      new THREE.BoxGeometry(0.24, 0.09, 2.1),
       pointerMat
     );
-    pointer.position.set(0, 0.74, 0);
+    pointer.position.set(0, 0.80, 0);
     this.potKnobMesh.add(pointer);
 
     potGroup.add(this.potKnobMesh);
 
     // 4. Three Silver Solder Lug Terminal Pins inserting directly into Row 9, 10, 11 Col 'e'
-    const pinLugMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    const pinLugMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.88, roughness: 0.18 });
     const lugLocalX = h10.x - 9.8;
     const lugPositionsZ = [h9.z - h10.z, 0, h11.z - h10.z];
 
     lugPositionsZ.forEach(lz => {
-      // Horizontal lead from body to hole
-      const lugH = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(lugLocalX), 0.18, 0.35), pinLugMat);
+      const lugH = new THREE.Mesh(new THREE.BoxGeometry(Math.abs(lugLocalX) + 0.2, 0.2, 0.38), pinLugMat);
       lugH.position.set(lugLocalX * 0.5, 0.35, lz);
       potGroup.add(lugH);
 
-      // Vertical pin dropping into breadboard hole
-      const lugV = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.75, 0.35), pinLugMat);
-      lugV.position.set(lugLocalX, 0.1, lz);
+      const lugV = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.85, 0.38), pinLugMat);
+      lugV.position.set(lugLocalX, 0.05, lz);
       lugV.castShadow = true;
       potGroup.add(lugV);
     });
@@ -1484,7 +1482,8 @@ buildBreadboard() {
 
     const midX = (pos1.x + pos2.x) * 0.5;
     const midZ = (pos1.z + pos2.z) * 0.5;
-    const bodyY = Math.max(pos1.y, pos2.y) + 0.55;
+    // Elevate resistor body cleanly above breadboard so it is never hidden by wires or shadows
+    const bodyY = Math.max(pos1.y, pos2.y) + 1.35;
 
     resGroup.position.set(midX, bodyY, midZ);
 
@@ -1495,69 +1494,69 @@ buildBreadboard() {
 
     resGroup.rotation.y = angleY;
 
-    // 1. Ceramic Dumbbell Body - Warm Tan/Beige (#D5C4A1)
-    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xd5c4a1, roughness: 0.45 });
-    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1.8, 24), bodyMat);
+    // 1. Ceramic Dumbbell Body - Warm Ivory Satin Finish (#EEDEC6)
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0xeedec6, roughness: 0.35 });
+    const body = new THREE.Mesh(new THREE.CylinderGeometry(0.56, 0.56, 2.1, 28), bodyMat);
     body.rotation.x = Math.PI / 2;
     body.castShadow = true;
     body.receiveShadow = true;
     resGroup.add(body);
 
-    const endGeo = new THREE.SphereGeometry(0.46, 20, 16);
+    const endGeo = new THREE.SphereGeometry(0.62, 24, 18);
     const end1 = new THREE.Mesh(endGeo, bodyMat);
-    end1.position.z = -0.9;
+    end1.position.z = -1.05;
     end1.castShadow = true;
     resGroup.add(end1);
 
     const end2 = new THREE.Mesh(endGeo, bodyMat);
-    end2.position.z = 0.9;
+    end2.position.z = 1.05;
     end2.castShadow = true;
     resGroup.add(end2);
 
-    // 2. Bold Color Bands: Red (#B91C1C), Red (#B91C1C), Brown (#451A03), Gold (#D4AF37)
-    const bandMatRed = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.2 });
-    const bandMatBrown = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.2 });
-    const bandMatGold = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.12, metalness: 0.9 });
+    // 2. Bold, High-Contrast Color Bands: Red (#D92525), Red (#D92525), Brown (#4A2205), Gold (#E5B022)
+    const bandMatRed = new THREE.MeshStandardMaterial({ color: 0xd92525, roughness: 0.18 });
+    const bandMatBrown = new THREE.MeshStandardMaterial({ color: 0x4a2205, roughness: 0.18 });
+    const bandMatGold = new THREE.MeshStandardMaterial({ color: 0xe5b022, roughness: 0.12, metalness: 0.92 });
 
-    const band1 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.24, 24), bandMatRed);
+    const band1 = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.28, 28), bandMatRed);
     band1.rotation.x = Math.PI / 2;
-    band1.position.z = -0.55;
+    band1.position.z = -0.65;
     band1.castShadow = true;
     resGroup.add(band1);
 
-    const band2 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.24, 24), bandMatRed);
+    const band2 = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.28, 28), bandMatRed);
     band2.rotation.x = Math.PI / 2;
-    band2.position.z = -0.20;
+    band2.position.z = -0.22;
     band2.castShadow = true;
     resGroup.add(band2);
 
-    const band3 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.24, 24), bandMatBrown);
+    const band3 = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.28, 28), bandMatBrown);
     band3.rotation.x = Math.PI / 2;
-    band3.position.z = 0.15;
+    band3.position.z = 0.20;
     band3.castShadow = true;
     resGroup.add(band3);
 
-    const band4 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.24, 24), bandMatGold);
+    const band4 = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, 0.28, 28), bandMatGold);
     band4.rotation.x = Math.PI / 2;
-    band4.position.z = 0.55;
+    band4.position.z = 0.65;
     band4.castShadow = true;
     resGroup.add(band4);
 
-    // 3. Smooth Bent Silver Tinned Wire Leads dropping into pos1 and pos2
-    const leadMat = new THREE.MeshStandardMaterial({ color: 0x8a929e, metalness: 0.85, roughness: 0.2 });
+    // 3. Polished Silver Tinned Wire Leads bending 90° down into pos1 and pos2
+    const leadMat = new THREE.MeshStandardMaterial({ color: 0xdde3eb, metalness: 0.9, roughness: 0.15 });
     const halfSpan = spanDist * 0.5;
 
     const path1 = new THREE.CurvePath();
-    path1.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, -0.9), new THREE.Vector3(0, 0, -halfSpan)));
-    path1.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, -halfSpan), new THREE.Vector3(0, -0.65, -halfSpan)));
-    const lead1Mesh = new THREE.Mesh(new THREE.TubeGeometry(path1, 16, 0.08, 8, false), leadMat);
+    path1.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, -1.05), new THREE.Vector3(0, 0, -halfSpan)));
+    path1.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, -halfSpan), new THREE.Vector3(0, -1.45, -halfSpan)));
+    const lead1Mesh = new THREE.Mesh(new THREE.TubeGeometry(path1, 16, 0.09, 8, false), leadMat);
     lead1Mesh.castShadow = true;
     resGroup.add(lead1Mesh);
 
     const path2 = new THREE.CurvePath();
-    path2.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, 0.9), new THREE.Vector3(0, 0, halfSpan)));
-    path2.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, halfSpan), new THREE.Vector3(0, -0.65, halfSpan)));
-    const lead2Mesh = new THREE.Mesh(new THREE.TubeGeometry(path2, 16, 0.08, 8, false), leadMat);
+    path2.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, 1.05), new THREE.Vector3(0, 0, halfSpan)));
+    path2.add(new THREE.LineCurve3(new THREE.Vector3(0, 0, halfSpan), new THREE.Vector3(0, -1.45, halfSpan)));
+    const lead2Mesh = new THREE.Mesh(new THREE.TubeGeometry(path2, 16, 0.09, 8, false), leadMat);
     lead2Mesh.castShadow = true;
     resGroup.add(lead2Mesh);
 
@@ -1575,168 +1574,269 @@ buildBreadboard() {
 
     ledGroup.position.set(midX, bodyY, midZ);
 
-    // 1. Rich Diffused Ruby Red Optical Epoxy Lens (Solid vibrant body that never fades when zooming out)
+    // 1. Rich Diffused Optical Epoxy Lens - Saturated Color with Inner Luminous Glow
     const domeMat = new THREE.MeshStandardMaterial({
       color: colorHex,
-      roughness: 0.28,
-      metalness: 0.04
+      emissive: colorHex,
+      emissiveIntensity: 0.28,
+      roughness: 0.12,
+      metalness: 0.04,
+      transparent: true,
+      opacity: 0.95
     });
 
-    this.ledMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.68, 0.68, 1.4, 24), domeMat);
-    this.ledMesh.position.y = 1.45;
+    // Elevated LED dome - stands tall and proud
+    this.ledMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 1.7, 28), domeMat);
+    this.ledMesh.position.y = 2.45;
     this.ledMesh.castShadow = true;
     this.ledMesh.receiveShadow = true;
     ledGroup.add(this.ledMesh);
 
-    const top = new THREE.Mesh(new THREE.SphereGeometry(0.68, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
-    top.position.y = 2.15;
+    const top = new THREE.Mesh(new THREE.SphereGeometry(0.85, 28, 18, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
+    top.position.y = 3.30;
     top.castShadow = true;
     ledGroup.add(top);
 
-    // Base Flange (#5C0909) with Cathode Flat Edge Detail
-    const rimMat = new THREE.MeshStandardMaterial({ color: 0x5c0909, roughness: 0.35 });
-    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 0.78, 0.20, 24), rimMat);
-    rim.position.y = 0.75;
+    // Base Flange Rim with Cathode Flat Edge
+    const rimMat = new THREE.MeshStandardMaterial({
+      color: colorHex,
+      emissive: colorHex,
+      emissiveIntensity: 0.15,
+      roughness: 0.25
+    });
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.24, 28), rimMat);
+    rim.position.y = 1.50;
     rim.castShadow = true;
     ledGroup.add(rim);
 
+    // Subtle dark perimeter outline for razor-sharp visual silhouette against bright breadboard
+    const outlineMat = new THREE.LineBasicMaterial({ color: 0x440808, transparent: true, opacity: 0.6 });
+    const domeEdges = new THREE.LineSegments(new THREE.EdgesGeometry(this.ledMesh.geometry), outlineMat);
+    this.ledMesh.add(domeEdges);
+
     // Internal Silver Lead Frame (Post & Reflective Anvil with Gold Chip Die)
-    const cupMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.18 });
-    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.07, 0.85, 8), cupMat);
-    post.position.set(-0.14, 1.25, 0);
+    const cupMat = new THREE.MeshStandardMaterial({ color: 0xdde3eb, metalness: 0.9, roughness: 0.15 });
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.0, 8), cupMat);
+    post.position.set(-0.16, 2.2, 0);
     ledGroup.add(post);
 
-    const anvil = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.38, 0.14), cupMat);
-    anvil.position.set(0.14, 1.4, 0);
+    const anvil = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.44, 0.16), cupMat);
+    anvil.position.set(0.16, 2.35, 0);
     ledGroup.add(anvil);
 
     // Golden LED semiconductor die bonded in the anvil cup
-    const dieMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.9, roughness: 0.1 });
-    const die = new THREE.Mesh(new THREE.BoxGeometry(0.10, 0.10, 0.07), dieMat);
-    die.position.set(0.14, 1.5, 0.04);
+    const dieMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.95, roughness: 0.1 });
+    const die = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.12, 0.08), dieMat);
+    die.position.set(0.16, 2.45, 0.04);
     ledGroup.add(die);
 
-    // Dynamic Point Light
-    this.ledLight = new THREE.PointLight(0xff3333, 0, 16);
-    this.ledLight.position.set(0, 2.2, 0);
+    // Dynamic Point Light for interactive illumination
+    this.ledLight = new THREE.PointLight(colorHex, 0, 18);
+    this.ledLight.position.set(0, 3.4, 0);
     ledGroup.add(this.ledLight);
 
-    // Polished Silver Leads into breadboard (#828A96)
-    const leadMat = new THREE.MeshStandardMaterial({ color: 0x8a929e, metalness: 0.85, roughness: 0.2 });
+    // Polished Silver Leads extending into breadboard holes
+    const leadMat = new THREE.MeshStandardMaterial({ color: 0xdde3eb, metalness: 0.9, roughness: 0.15 });
     const relZ1 = pos1.z - midZ;
     const relZ2 = pos2.z - midZ;
 
-    const lead1 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.1, 8), leadMat);
-    lead1.position.set(0, 0.2, relZ1);
+    const lead1 = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.6, 8), leadMat);
+    lead1.position.set(0, 0.70, relZ1);
     lead1.castShadow = true;
     ledGroup.add(lead1);
 
-    const lead2 = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.1, 8), leadMat);
-    lead2.position.set(0, 0.2, relZ2);
+    const lead2 = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.6, 8), leadMat);
+    lead2.position.set(0, 0.70, relZ2);
     lead2.castShadow = true;
     ledGroup.add(lead2);
 
     this.componentsGroup.add(ledGroup);
   }
 
-build3DPushButton(x, y, z) {
+  build3DPushButton(anchor) {
     const btnGroup = new THREE.Group();
-    btnGroup.position.set(x, y, z);
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(9, 'c'));
+    btnGroup.position.set(pos.x, pos.y, pos.z);
 
-    const base = new THREE.Mesh(
-      new THREE.BoxGeometry(2.8, 0.85, 2.8),
-      new THREE.MeshStandardMaterial({ color: 0x121418, roughness: 0.75 })
-    );
-    base.position.y = 0.42;
+    // Black Omron tactile switch base
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x14161c, roughness: 0.65 });
+    const base = new THREE.Mesh(new THREE.BoxGeometry(3.2, 1.1, 3.2), baseMat);
+    base.position.y = 0.55;
+    base.castShadow = true;
+    base.receiveShadow = true;
     btnGroup.add(base);
 
-    const plungerMat = new THREE.MeshStandardMaterial({ color: 0x9e1a1a, roughness: 0.4 });
-    this.buttonMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.9, 0.9, 0.75, 24), plungerMat);
-    this.buttonMesh.position.y = 1.1;
+    // Metallic chrome top retaining plate with circular aperture
+    const plateMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.18 });
+    const plate = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.12, 3.1), plateMat);
+    plate.position.y = 1.15;
+    btnGroup.add(plate);
+
+    // Vibrant tactile red cylindrical button actuator
+    const plungerMat = new THREE.MeshStandardMaterial({ color: 0xd32f2f, roughness: 0.28 });
+    this.buttonMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.95, 0.85, 24), plungerMat);
+    this.buttonMesh.position.y = 1.5;
+    this.buttonMesh.castShadow = true;
     btnGroup.add(this.buttonMesh);
+
+    // 4 silver bent pins going into breadboard
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    [[-1.3, -1.3], [-1.3, 1.3], [1.3, -1.3], [1.3, 1.3]].forEach(([px, pz]) => {
+      const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.7, 8), pinMat);
+      pin.position.set(px, 0.1, pz);
+      btnGroup.add(pin);
+    });
 
     this.componentsGroup.add(btnGroup);
   }
 
-  build3DRGBLED(x, y, z) {
-    this.build3DLED(x, y, z, 0x7c3aed);
+  build3DRGBLED(anchor) {
+    // 4-lead common-cathode 5mm RGB LED
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(14, 'c'));
+    const rgbGroup = new THREE.Group();
+    rgbGroup.position.set(pos.x, pos.y, pos.z);
+
+    // Milky diffused epoxy dome with internal luminous glow
+    const domeMat = new THREE.MeshStandardMaterial({
+      color: 0xf5f3ee,
+      emissive: 0x9333ea,
+      emissiveIntensity: 0.35,
+      roughness: 0.18,
+      transparent: true,
+      opacity: 0.92
+    });
+
+    const dome = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 1.7, 24), domeMat);
+    dome.position.y = 2.4;
+    dome.castShadow = true;
+    rgbGroup.add(dome);
+
+    const top = new THREE.Mesh(new THREE.SphereGeometry(0.85, 24, 16, 0, Math.PI * 2, 0, Math.PI / 2), domeMat);
+    top.position.y = 3.25;
+    top.castShadow = true;
+    rgbGroup.add(top);
+
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.98, 0.98, 0.22, 24), domeMat);
+    rim.position.y = 1.5;
+    rgbGroup.add(rim);
+
+    // 4 silver leads extending down into breadboard
+    const leadMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    [-0.6, -0.2, 0.2, 0.6].forEach(lz => {
+      const lead = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.5, 8), leadMat);
+      lead.position.set(0, 0.75, lz);
+      rgbGroup.add(lead);
+    });
+
+    this.componentsGroup.add(rgbGroup);
   }
 
-  build3DUltrasonic(anchor, y, z) {
-    let px = 0, py = 0, pz = 0;
-    if (anchor && typeof anchor === 'object') {
-      px = anchor.x || 0;
-      py = anchor.y || 0;
-      pz = anchor.z || 0;
-    } else {
-      px = anchor || 0;
-      py = y || 0;
-      pz = z || 0;
-    }
+  build3DUltrasonic(anchor) {
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(11, 'c'));
     const sonarGroup = new THREE.Group();
-    sonarGroup.position.set(px, py, pz);
+    sonarGroup.position.set(pos.x, pos.y, pos.z);
 
-    // Deep Cobalt Blue PCB
-    const pcb = new THREE.Mesh(
-      new THREE.BoxGeometry(6.8, 3.6, 0.4),
-      new THREE.MeshStandardMaterial({ color: 0x0c4573, roughness: 0.35 })
-    );
-    pcb.position.y = 1.8;
+    // Authentic HC-SR04 Deep Cobalt Blue PCB
+    const pcbMat = new THREE.MeshStandardMaterial({ color: 0x0c4573, roughness: 0.35 });
+    const pcb = new THREE.Mesh(new THREE.BoxGeometry(7.2, 3.8, 0.4), pcbMat);
+    pcb.position.y = 2.2;
     pcb.castShadow = true;
     pcb.receiveShadow = true;
     sonarGroup.add(pcb);
 
-    // Silver Transducer Barrels with Grille Mesh Caps
-    const cylMat = new THREE.MeshStandardMaterial({ color: 0xd8d6cf, metalness: 0.75, roughness: 0.22 });
-    const screenMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.85 });
+    // Brushed aluminum transducer barrels (Transmitter "T" and Receiver "R")
+    const cylMat = new THREE.MeshStandardMaterial({ color: 0xe2e0db, metalness: 0.82, roughness: 0.18 });
+    const screenMat = new THREE.MeshStandardMaterial({ color: 0x1e2430, roughness: 0.9 });
+    const ringMat = new THREE.MeshStandardMaterial({ color: 0x22262e, roughness: 0.8 });
 
-    [-1.9, 1.9].forEach(ox => {
-      const t = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 1.7, 28), cylMat);
+    [-2.0, 2.0].forEach(ox => {
+      const t = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, 1.8, 28), cylMat);
       t.rotation.x = Math.PI / 2;
-      t.position.set(ox, 1.8, 0.95);
+      t.position.set(ox, 2.2, 1.0);
       t.castShadow = true;
       t.receiveShadow = true;
       sonarGroup.add(t);
 
-      const screen = new THREE.Mesh(new THREE.CylinderGeometry(0.85, 0.85, 0.05, 24), screenMat);
+      const screen = new THREE.Mesh(new THREE.CylinderGeometry(0.90, 0.90, 0.06, 24), screenMat);
       screen.rotation.x = Math.PI / 2;
-      screen.position.set(ox, 1.8, 1.81);
+      screen.position.set(ox, 2.2, 1.92);
       sonarGroup.add(screen);
+
+      const rim = new THREE.Mesh(new THREE.TorusGeometry(0.92, 0.08, 12, 28), ringMat);
+      rim.position.set(ox, 2.2, 1.93);
+      sonarGroup.add(rim);
     });
+
+    // 10MHz crystal oscillator can between barrels
+    const xtalMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    const xtal = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 1.0, 16), xtalMat);
+    xtal.position.set(0, 2.6, 0.35);
+    sonarGroup.add(xtal);
+
+    // 4 silver right-angle header pins inserting into breadboard
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    for (let i = 0; i < 4; i++) {
+      const pz = (i - 1.5) * 0.7;
+      const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.0, 8), pinMat);
+      pin.position.set(0, 0.5, pz);
+      sonarGroup.add(pin);
+    }
 
     this.componentsGroup.add(sonarGroup);
   }
 
-  build3DBuzzer(x, y, z) {
+  build3DBuzzer(anchor) {
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(7, 'c'));
     const bGroup = new THREE.Group();
-    bGroup.position.set(x, y, z);
+    bGroup.position.set(pos.x, pos.y, pos.z);
 
-    const cyl = new THREE.Mesh(
-      new THREE.CylinderGeometry(1.6, 1.6, 1.5, 32),
-      new THREE.MeshStandardMaterial({ color: 0x121418, roughness: 0.75 })
-    );
-    cyl.position.y = 0.75;
+    // High-contrast matte black piezo cylinder
+    const cylMat = new THREE.MeshStandardMaterial({ color: 0x14161c, roughness: 0.7 });
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(1.7, 1.7, 1.6, 32), cylMat);
+    cyl.position.y = 1.1;
+    cyl.castShadow = true;
+    cyl.receiveShadow = true;
     bGroup.add(cyl);
 
+    // Top sound acoustic port hole
     const hole = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.38, 0.38, 0.1, 16),
+      new THREE.CylinderGeometry(0.42, 0.42, 0.1, 16),
       new THREE.MeshBasicMaterial({ color: 0x050608 })
     );
-    hole.position.y = 1.51;
+    hole.position.y = 1.92;
     bGroup.add(hole);
+
+    // White printed "+" polarity indicator
+    const plusMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const plusH = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.05, 0.12), plusMat);
+    plusH.position.set(0.9, 1.92, 0.5);
+    bGroup.add(plusH);
+    const plusV = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.05, 0.5), plusMat);
+    plusV.position.set(0.9, 1.92, 0.5);
+    bGroup.add(plusV);
+
+    // Silver terminal pins
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    [-0.6, 0.6].forEach(pz => {
+      const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.8, 8), pinMat);
+      pin.position.set(0, 0.2, pz);
+      bGroup.add(pin);
+    });
 
     this.componentsGroup.add(bGroup);
   }
 
-  build3DDCMotor(x, y, z) {
+  build3DDCMotor(anchor) {
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(15, 'c'));
     const mGroup = new THREE.Group();
-    mGroup.position.set(x, y, z);
+    mGroup.position.set(pos.x, pos.y, pos.z);
 
     const body = new THREE.Mesh(
       new THREE.CylinderGeometry(1.3, 1.3, 3.2, 24),
       new THREE.MeshStandardMaterial({ color: 0xd5d2ca, roughness: 0.5 })
     );
     body.position.y = 1.6;
+    body.castShadow = true;
     mGroup.add(body);
 
     this.motorFanMesh = new THREE.Group();
@@ -1748,11 +1848,12 @@ build3DPushButton(x, y, z) {
     );
     this.motorFanMesh.add(shaft);
 
-    const bladeMat = new THREE.MeshStandardMaterial({ color: 0x9e1a1a, roughness: 0.4 });
+    const bladeMat = new THREE.MeshStandardMaterial({ color: 0xd32f2f, roughness: 0.35 });
     for (let i = 0; i < 3; i++) {
       const blade = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.12, 2.6), bladeMat);
       blade.rotation.y = (i * Math.PI * 2) / 3;
       blade.position.y = 0.4;
+      blade.castShadow = true;
       this.motorFanMesh.add(blade);
     }
 
@@ -1760,69 +1861,116 @@ build3DPushButton(x, y, z) {
     this.componentsGroup.add(mGroup);
   }
 
-  build3DTMP36(x, y, z) {
+  build3DTMP36(anchor) {
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(11, 'c'));
     const tGroup = new THREE.Group();
-    tGroup.position.set(x, y, z);
+    tGroup.position.set(pos.x, pos.y, pos.z);
 
-    const packageMesh = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.68, 0.68, 1.4, 16, 1, false, 0, Math.PI),
-      new THREE.MeshStandardMaterial({ color: 0x121418, roughness: 0.7 })
+    // TO-92 flat-front / half-cylinder back package
+    const pkgMat = new THREE.MeshStandardMaterial({ color: 0x181a20, roughness: 0.65 });
+    const halfCyl = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.75, 0.75, 1.6, 20, 1, false, 0, Math.PI),
+      pkgMat
     );
-    packageMesh.position.y = 1.35;
-    tGroup.add(packageMesh);
+    halfCyl.position.y = 1.6;
+    halfCyl.castShadow = true;
+    tGroup.add(halfCyl);
+
+    const flatFace = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.6, 0.08), pkgMat);
+    flatFace.position.set(0, 1.6, 0);
+    tGroup.add(flatFace);
+
+    // 3 silver leads
+    const pinMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
+    [-0.45, 0, 0.45].forEach(ox => {
+      const pin = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.0, 8), pinMat);
+      pin.position.set(ox, 0.5, 0);
+      tGroup.add(pin);
+    });
 
     this.componentsGroup.add(tGroup);
   }
 
-  build3DSG90Servo(x, y, z) {
+  build3DSG90Servo(anchor) {
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(12, 'c'));
     const sGroup = new THREE.Group();
-    sGroup.position.set(x, y, z);
+    sGroup.position.set(pos.x, pos.y, pos.z);
 
-    const caseMesh = new THREE.Mesh(
-      new THREE.BoxGeometry(2.6, 3.0, 1.5),
-      new THREE.MeshStandardMaterial({ color: 0x12367d, transparent: true, opacity: 0.9, roughness: 0.4 })
-    );
-    caseMesh.position.y = 1.5;
-    sGroup.add(caseMesh);
+    // TowerPro blue translucent casing
+    const caseMat = new THREE.MeshStandardMaterial({
+      color: 0x0284c7,
+      roughness: 0.35,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0.92
+    });
+    const body = new THREE.Mesh(new THREE.BoxGeometry(2.8, 3.2, 1.6), caseMat);
+    body.position.y = 1.8;
+    body.castShadow = true;
+    sGroup.add(body);
 
+    // Mounting tabs with brass eyelets
+    const tabGeo = new THREE.BoxGeometry(0.6, 0.2, 1.6);
+    [-1.7, 1.7].forEach(tx => {
+      const tab = new THREE.Mesh(tabGeo, caseMat);
+      tab.position.set(tx, 2.4, 0);
+      sGroup.add(tab);
+      const eyelet = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.25, 12), new THREE.MeshStandardMaterial({ color: 0xd4af37, metalness: 0.8 }));
+      eyelet.position.set(tx, 2.4, 0);
+      sGroup.add(eyelet);
+    });
+
+    // Output spline and white nylon double horn
     this.servoArmMesh = new THREE.Group();
-    this.servoArmMesh.position.set(0, 3.2, 0);
+    this.servoArmMesh.position.set(0, 3.5, 0);
 
-    const horn = new THREE.Mesh(
-      new THREE.BoxGeometry(0.58, 0.24, 2.8),
-      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.4 })
-    );
+    const hornMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 });
+    const hornCenter = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.35, 16), hornMat);
+    this.servoArmMesh.add(hornCenter);
+
+    const horn = new THREE.Mesh(new THREE.BoxGeometry(0.55, 0.24, 3.2), hornMat);
+    horn.position.y = 0.1;
     this.servoArmMesh.add(horn);
 
     sGroup.add(this.servoArmMesh);
     this.componentsGroup.add(sGroup);
   }
 
-  build3DTrafficLight(x, y, z) {
+  build3DTrafficLight(anchor) {
+    const pos = (anchor && anchor.isVector3) ? anchor : (anchor && anchor.x !== undefined ? anchor : this.getBreadboardHole(15, 'c'));
     const tlGroup = new THREE.Group();
-    tlGroup.position.set(x, y, z);
+    tlGroup.position.set(pos.x, pos.y, pos.z);
 
-    const pole = new THREE.Mesh(
-      new THREE.BoxGeometry(1.6, 5.4, 1.2),
-      new THREE.MeshStandardMaterial({ color: 0x121418, roughness: 0.75 })
-    );
-    pole.position.y = 2.7;
+    const poleMat = new THREE.MeshStandardMaterial({ color: 0x14161c, roughness: 0.75 });
+    const pole = new THREE.Mesh(new THREE.BoxGeometry(1.8, 5.8, 1.4), poleMat);
+    pole.position.y = 2.9;
+    pole.castShadow = true;
     tlGroup.add(pole);
 
-    const rMat = new THREE.MeshStandardMaterial({ color: 0x7f1d1d, emissive: 0xd32f2f, emissiveIntensity: 0.1 });
-    const yMat = new THREE.MeshStandardMaterial({ color: 0x713f12, emissive: 0xe5a823, emissiveIntensity: 0.1 });
-    const gMat = new THREE.MeshStandardMaterial({ color: 0x14532d, emissive: 0x2e7d32, emissiveIntensity: 0.1 });
+    // Visor hoods over each light
+    const hoodMat = new THREE.MeshStandardMaterial({ color: 0x0f1115, roughness: 0.7 });
+    [4.5, 2.9, 1.3].forEach(hy => {
+      const hood = new THREE.Mesh(new THREE.CylinderGeometry(0.58, 0.58, 0.4, 16, 1, true, 0, Math.PI), hoodMat);
+      hood.rotation.z = Math.PI / 2;
+      hood.position.set(0, hy + 0.25, 0.85);
+      tlGroup.add(hood);
+    });
 
-    this.trafficLeds.red = new THREE.Mesh(new THREE.SphereGeometry(0.44, 16, 16), rMat);
-    this.trafficLeds.red.position.set(0, 4.3, 0.68);
+    const rMat = new THREE.MeshStandardMaterial({ color: 0xd32f2f, emissive: 0xd32f2f, emissiveIntensity: 0.3, roughness: 0.2 });
+    const yMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, emissive: 0xf59e0b, emissiveIntensity: 0.3, roughness: 0.2 });
+    const gMat = new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x10b981, emissiveIntensity: 0.3, roughness: 0.2 });
+
+    this.trafficLeds = this.trafficLeds || {};
+    this.trafficLeds.red = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), rMat);
+    this.trafficLeds.red.position.set(0, 4.5, 0.72);
     tlGroup.add(this.trafficLeds.red);
 
-    this.trafficLeds.yellow = new THREE.Mesh(new THREE.SphereGeometry(0.44, 16, 16), yMat);
-    this.trafficLeds.yellow.position.set(0, 2.7, 0.68);
+    this.trafficLeds.yellow = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), yMat);
+    this.trafficLeds.yellow.position.set(0, 2.9, 0.72);
     tlGroup.add(this.trafficLeds.yellow);
 
-    this.trafficLeds.green = new THREE.Mesh(new THREE.SphereGeometry(0.44, 16, 16), gMat);
-    this.trafficLeds.green.position.set(0, 1.2, 0.68);
+    this.trafficLeds.green = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), gMat);
+    this.trafficLeds.green.position.set(0, 1.3, 0.72);
     tlGroup.add(this.trafficLeds.green);
 
     this.componentsGroup.add(tlGroup);
@@ -1944,29 +2092,33 @@ build3DPushButton(x, y, z) {
   }
 
   createCurved3DWire(p1, p2, colorHex, wireIndex = 0, conn = null) {
-    // 1. Authentic DuPont Connector Housing (Black body with color-coded strain-relief collar)
-    const bootGeo = new THREE.BoxGeometry(0.58, 1.35, 0.58);
+    const dist = p1.distanceTo(p2);
+    // Skip zero-distance internal row connections (e.g. row 18 internally connects Resistor & LED anode)
+    if (dist < 0.6) return;
+
+    // 1. Authentic DuPont Connector Housing (Compact sleek black body with color-coded strain-relief collar)
+    const bootGeo = new THREE.BoxGeometry(0.38, 0.85, 0.38);
     const bootMat = new THREE.MeshStandardMaterial({ color: 0x181a20, roughness: 0.50 });
     const collarMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.45 });
-    const collarGeo = new THREE.CylinderGeometry(0.36, 0.36, 0.45, 16);
+    const collarGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.28, 16);
     const metalMat = new THREE.MeshStandardMaterial({ color: 0xc8d0dc, metalness: 0.85, roughness: 0.2 });
 
     // Boot at Endpoint 1
     const b1Group = new THREE.Group();
     b1Group.position.copy(p1);
-    b1Group.position.y += 0.58;
+    b1Group.position.y += 0.38;
 
     const b1Mesh = new THREE.Mesh(bootGeo, bootMat);
     b1Mesh.castShadow = true;
     b1Mesh.receiveShadow = true;
     b1Group.add(b1Mesh);
 
-    const latch1 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.40, 0.08), metalMat);
-    latch1.position.set(0, 0, 0.22);
+    const latch1 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.28, 0.06), metalMat);
+    latch1.position.set(0, 0, 0.16);
     b1Group.add(latch1);
 
     const collar1 = new THREE.Mesh(collarGeo, collarMat);
-    collar1.position.set(0, 0.65, 0);
+    collar1.position.set(0, 0.46, 0);
     collar1.castShadow = true;
     b1Group.add(collar1);
 
@@ -1975,19 +2127,19 @@ build3DPushButton(x, y, z) {
     // Boot at Endpoint 2
     const b2Group = new THREE.Group();
     b2Group.position.copy(p2);
-    b2Group.position.y += 0.58;
+    b2Group.position.y += 0.38;
 
     const b2Mesh = new THREE.Mesh(bootGeo, bootMat);
     b2Mesh.castShadow = true;
     b2Mesh.receiveShadow = true;
     b2Group.add(b2Mesh);
 
-    const latch2 = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.40, 0.08), metalMat);
-    latch2.position.set(0, 0, 0.22);
+    const latch2 = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.28, 0.06), metalMat);
+    latch2.position.set(0, 0, 0.16);
     b2Group.add(latch2);
 
     const collar2 = new THREE.Mesh(collarGeo, collarMat);
-    collar2.position.set(0, 0.65, 0);
+    collar2.position.set(0, 0.46, 0);
     collar2.castShadow = true;
     b2Group.add(collar2);
 
@@ -1995,7 +2147,7 @@ build3DPushButton(x, y, z) {
 
     // Gold Pin Tips into socket
     const goldPinMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.25, metalness: 0.8 });
-    const pinTipGeo = new THREE.CylinderGeometry(0.07, 0.07, 0.5, 8);
+    const pinTipGeo = new THREE.CylinderGeometry(0.06, 0.06, 0.4, 8);
 
     const tip1 = new THREE.Mesh(pinTipGeo, goldPinMat);
     tip1.position.copy(p1);
@@ -2005,25 +2157,24 @@ build3DPushButton(x, y, z) {
     tip2.position.copy(p2);
     this.wiresGroup.add(tip2);
 
-    // 2. Realistic Organic 3D Flexible Wire Spline with Natural Gravity Slack & Lateral Bow
+    // 2. Realistic Sleek 24-AWG Jumper Wire Spline with Natural Arch & Lateral Separation
     const startPoint = p1.clone();
-    startPoint.y += 1.25;
+    startPoint.y += 0.88;
 
     const endPoint = p2.clone();
-    endPoint.y += 1.25;
+    endPoint.y += 0.88;
 
-    const dist = startPoint.distanceTo(endPoint);
-    const apexY = Math.max(startPoint.y, endPoint.y) + Math.min(dist * 0.32, 4.8) + (wireIndex % 2) * 0.4;
+    const apexY = Math.max(startPoint.y, endPoint.y) + Math.min(dist * 0.16 + 0.6, 2.5) + (wireIndex % 3) * 0.22;
 
     const dirX = endPoint.x - startPoint.x;
     const dirZ = endPoint.z - startPoint.z;
     const perpX = -dirZ / (dist || 1);
     const perpZ = dirX / (dist || 1);
     const bowSign = (wireIndex % 2 === 0) ? 1 : -1;
-    const bowAmount = Math.min(dist * 0.12, 1.4) * bowSign;
+    const bowAmount = Math.min(dist * 0.08, 0.85) * bowSign;
 
     const pTakeoff = startPoint.clone();
-    pTakeoff.y += 1.35;
+    pTakeoff.y += 0.85;
 
     const pMid = new THREE.Vector3(
       (startPoint.x + endPoint.x) * 0.5 + perpX * bowAmount,
@@ -2032,7 +2183,7 @@ build3DPushButton(x, y, z) {
     );
 
     const pLanding = endPoint.clone();
-    pLanding.y += 1.35;
+    pLanding.y += 0.85;
 
     const curve = new THREE.CatmullRomCurve3(
       [startPoint, pTakeoff, pMid, pLanding, endPoint],
@@ -2041,10 +2192,11 @@ build3DPushButton(x, y, z) {
       0.5
     );
 
-    const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.44, 16, false);
+    // Authentic wire radius: 0.22 (sleek, realistic, never obscures components)
+    const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.22, 16, false);
     const tubeMat = new THREE.MeshStandardMaterial({
       color: colorHex,
-      roughness: 0.55,
+      roughness: 0.52,
       metalness: 0.0
     });
 
@@ -2337,8 +2489,8 @@ build3DPushButton(x, y, z) {
   resetCamera() {
     if (this.controls) {
       this.controls.reset();
-      this.camera.position.set(-14, 25, 25);
-      this.controls.target.set(0, 1.0, 0);
+      this.camera.position.set(-2.0, 27.0, 29.0);
+      this.controls.target.set(0.5, 1.0, 0);
       this.controls.update();
     }
   }

@@ -638,6 +638,7 @@ body {
 
 /* Minimap Radar Widget */
 .minimap {
+  display: none;
   position: absolute;
   bottom: 14px;
   left: 16px;
